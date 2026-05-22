@@ -5,20 +5,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>إدارة سمان ههيا</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; margin: 0; padding: 15px; background-color: #f4f7f6; }
+        body { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; margin: 0; padding: 15px; background-color: #f4f7f6; padding-top: 20px;}
         .card { background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         h2 { color: #2c3e50; margin-top: 0; font-size: 18px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
         input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px;}
-        button { color: white; border: none; padding: 12px; border-radius: 8px; width: 100%; font-size: 16px; cursor: pointer; font-weight: bold; margin-top: 5px; }
+        button { color: white; border: none; padding: 12px; border-radius: 8px; width: 100%; font-size: 16px; cursor: pointer; font-weight: bold; margin-top: 5px; transition: 0.2s;}
+        button:active { transform: scale(0.98); }
         .btn-green { background: #27ae60; }
         .btn-blue { background: #2980b9; }
         .btn-purple { background: #8e44ad; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .stat-box { background: #ecf0f1; padding: 15px; text-align: center; border-radius: 8px; }
-        .stat-num { display: block; font-size: 22px; font-weight: bold; color: #d35400; margin-top: 5px;}
+        .stat-num { display: block; font-size: 24px; font-weight: bold; color: #d35400; margin-top: 5px;}
+        
+        #notificationBox {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            z-index: 1000;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            text-align: center;
+            width: 80%;
+            max-width: 350px;
+        }
+        
+        #connectionStatus {
+            text-align: center;
+            font-size: 14px;
+            margin-top: -10px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: #7f8c8d;
+        }
     </style>
 </head>
 <body>
+
+    <div id="notificationBox"></div>
+    <div id="connectionStatus">جاري الاتصال بقاعدة البيانات... ⏳</div>
 
     <div class="card">
         <h2>📊 لوحة التحكم والمخزن</h2>
@@ -55,13 +85,22 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, doc, getDoc, setDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
+        function showMessage(text, isError = false) {
+            const msgBox = document.getElementById('notificationBox');
+            msgBox.innerText = text;
+            msgBox.style.backgroundColor = isError ? '#e74c3c' : '#2ecc71';
+            msgBox.style.display = 'block';
+            setTimeout(() => { msgBox.style.display = 'none'; }, 3000);
+        }
+
+        // مفاتيح مشروعك الجديد
         const firebaseConfig = {
-          apiKey: "AIzaSyA4RYFUgB4Pz8SXizsKdnz8UU90nJiib9I",
-          authDomain: "sman-data-fbad1.firebaseapp.com",
-          projectId: "sman-data-fbad1",
-          storageBucket: "sman-data-fbad1.firebasestorage.app",
-          messagingSenderId: "469976194319",
-          appId: "1:469976194319:web:4d50de87b9a361779db27a"
+          apiKey: "AIzaSyCVlbWLaLqYnQVsWgFPTe4PL38bWLTLyuU",
+          authDomain: "sman-6512c.firebaseapp.com",
+          projectId: "sman-6512c",
+          storageBucket: "sman-6512c.firebasestorage.app",
+          messagingSenderId: "64902261641",
+          appId: "1:64902261641:web:d9d2d78d966e8aa4618f58"
         };
 
         try {
@@ -72,11 +111,14 @@
             const freezerCountEl = document.getElementById('freezerCount');
             const totalSalesEl = document.getElementById('totalSales');
             const hatchDateMsg = document.getElementById('hatchDateMsg');
+            const statusEl = document.getElementById('connectionStatus');
 
-            // 1. الماكينة
+            statusEl.innerText = "متصل بقاعدة البيانات ✅";
+            statusEl.style.color = "#27ae60";
+
             document.getElementById('addEggsBtn').addEventListener('click', async () => {
                 const qty = parseInt(document.getElementById('eggCount').value);
-                if (!qty) return alert("برجاء إدخال عدد البيض");
+                if (!qty) return showMessage("برجاء إدخال عدد البيض", true);
 
                 const today = new Date();
                 const hatchDate = new Date();
@@ -91,11 +133,10 @@
                     });
                     hatchDateMsg.innerText = `✅ ميعاد الفقس: ${hatchDate.toLocaleDateString('ar-EG')}`;
                     document.getElementById('eggCount').value = '';
-                    alert("✅ تم التسجيل بنجاح!");
-                } catch (e) { alert("❌ خطأ: تأكد من تفعيل قاعدة البيانات"); }
+                    showMessage("تم تسجيل الدفعة بنجاح!");
+                } catch (e) { showMessage("خطأ: تأكد من تفعيل Firestore في وضع Test Mode", true); }
             });
 
-            // 2. الفريزر
             async function updateFreezer(amount) {
                 const freezerRef = doc(db, "inventory", "freezer");
                 const snap = await getDoc(freezerRef);
@@ -103,7 +144,7 @@
                 
                 const newCount = currentCount + amount;
                 if (newCount < 0) {
-                    alert("❌ الرصيد في الفريزر لا يكفي!");
+                    showMessage("الرصيد في الفريزر لا يكفي!", true);
                     return false;
                 }
                 await setDoc(freezerRef, { count: newCount });
@@ -113,34 +154,37 @@
             document.getElementById('addFreezerBtn').addEventListener('click', async () => {
                 const qty = parseInt(document.getElementById('freezerQty').value);
                 if(qty) {
-                    await updateFreezer(qty);
-                    document.getElementById('freezerQty').value = '';
-                    alert("✅ تم إضافة الكمية للفريزر");
-                } else {
-                    alert("برجاء إدخال الكمية أولاً");
-                }
+                    try {
+                        await updateFreezer(qty);
+                        document.getElementById('freezerQty').value = '';
+                        showMessage("تم إضافة الكمية للفريزر بنجاح!");
+                    } catch(e) { showMessage("خطأ في الاتصال", true); }
+                } else { showMessage("برجاء إدخال الكمية أولاً", true); }
             });
 
-            // 3. المبيعات
             document.getElementById('sellBtn').addEventListener('click', async () => {
                 const qty = parseInt(document.getElementById('saleQty').value);
                 const price = parseFloat(document.getElementById('salePrice').value);
                 
-                if (!qty || !price) return alert("برجاء إدخال الكمية والسعر");
+                if (!qty || !price) return showMessage("برجاء إدخال الكمية والسعر", true);
 
-                const success = await updateFreezer(-qty);
-                if (success) {
-                    const today = new Date().toISOString().split('T')[0];
-                    await addDoc(collection(db, "sales"), { quantity: qty, price: price, total: qty * price, date: today });
-                    document.getElementById('saleQty').value = '';
-                    document.getElementById('salePrice').value = '';
-                    alert("✅ تم البيع وخصم الكمية");
-                }
+                try {
+                    const success = await updateFreezer(-qty);
+                    if (success) {
+                        const today = new Date().toISOString().split('T')[0];
+                        await addDoc(collection(db, "sales"), { quantity: qty, price: price, total: qty * price, date: today });
+                        document.getElementById('saleQty').value = '';
+                        document.getElementById('salePrice').value = '';
+                        showMessage("تم البيع وخصم الكمية من الفريزر");
+                    }
+                } catch (e) { showMessage("حدث خطأ أثناء البيع", true); }
             });
 
-            // 4. تحديث الأرقام لحظياً
             onSnapshot(doc(db, "inventory", "freezer"), (doc) => {
                 freezerCountEl.innerText = doc.exists() ? doc.data().count : 0;
+            }, (error) => {
+                statusEl.innerText = "❌ خطأ في صلاحيات قاعدة البيانات (فعل Test Mode)";
+                statusEl.style.color = "red";
             });
 
             onSnapshot(collection(db, "incubator_batches"), (snapshot) => {
@@ -158,7 +202,7 @@
             });
 
         } catch (error) {
-            alert("❌ خطأ: " + error.message);
+            document.getElementById('connectionStatus').innerText = "❌ فشل الاتصال بقاعدة البيانات";
         }
     </script>
 </body>
