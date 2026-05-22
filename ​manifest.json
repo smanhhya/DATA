@@ -1,0 +1,15 @@
+{
+  "name": "إدارة سمان ههيا",
+  "short_name": "سمان ههيا",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#f4f7f6",
+  "theme_color": "#27ae60",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/875/875048.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
