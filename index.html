@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إدارة سمان ههيا</title>
+    <title>إدارة المزرعة والمخزن</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; margin: 0; padding: 15px; background-color: #f4f7f6; padding-top: 20px;}
         .card { background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         h2 { color: #2c3e50; margin-top: 0; font-size: 18px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px;}
+        input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px;}
         button { color: white; border: none; padding: 12px; border-radius: 8px; width: 100%; font-size: 16px; cursor: pointer; font-weight: bold; margin-top: 5px; transition: 0.2s;}
         button:active { transform: scale(0.98); }
         .btn-green { background: #27ae60; }
@@ -19,8 +19,12 @@
         .stat-num { display: block; font-size: 24px; font-weight: bold; color: #d35400; margin-top: 5px;}
         
         /* تنسيق كروت الدفعات */
-        .batch-item { background: #f8f9fa; padding: 12px; border-radius: 8px; margin-top: 10px; border-right: 5px solid #27ae60; font-size: 14px; line-height: 1.6; }
-        .batch-days { float: left; color: #d35400; font-weight: bold; background: #fce4d6; padding: 2px 8px; border-radius: 4px; font-size: 12px; }
+        .batch-item { background: #f8f9fa; padding: 14px; border-radius: 8px; margin-top: 10px; border-right: 5px solid #27ae60; font-size: 14px; line-height: 1.6; position: relative; }
+        .batch-turkey { border-right-color: #8e44ad; }
+        .batch-days { float: left; color: #d35400; font-weight: bold; background: #fce4d6; padding: 4px 8px; border-radius: 4px; font-size: 12px; }
+        .badge { display: inline-block; padding: 2px 6px; border-radius: 4px; color: white; font-size: 12px; font-weight: bold; }
+        .bg-quail { background: #27ae60; }
+        .bg-turkey { background: #8e44ad; }
 
         #notificationBox {
             display: none;
@@ -57,13 +61,25 @@
 
     <div class="card">
         <h2>🥚 مكنة التفريخ (إدخال بيض جديد)</h2>
+        
+        <label style="font-weight: bold; color: #34495e;">نوع الطائر:</label>
+        <select id="birdType">
+            <option value="quail">سمان (15 يوم + 3 أيام فقس)</option>
+            <option value="turkey">رومي (25 يوم + 3 أيام فقس)</option>
+        </select>
+
+        <label style="font-weight: bold; color: #34495e;">تاريخ دخول الماكينة:</label>
+        <input type="date" id="insertDate">
+
+        <label style="font-weight: bold; color: #34495e;">عدد البيض:</label>
         <input type="number" id="eggCount" placeholder="عدد البيض (مثال: 500)">
-        <button id="addEggsBtn" class="btn-green">تسجيل وحساب تاريخ الفقس</button>
+        
+        <button id="addEggsBtn" class="btn-green">تسجيل وحساب التواريخ تلقائياً</button>
         <p id="hatchDateMsg" style="color: #27ae60; font-weight: bold; margin-top: 15px; text-align: center;"></p>
     </div>
 
     <div class="card">
-        <h2>📋 متابعة دفعات السمان الحالية</h2>
+        <h2>📋 متابعة دفعات الماكينة الحالية</h2>
         <div id="batchesList">
             <p style="text-align: center; color: #7f8c8d; margin: 0;">لا توجد دفعات بالماكينة حالياً</p>
         </div>
@@ -116,31 +132,53 @@
             const hatchDateMsg = document.getElementById('hatchDateMsg');
             const statusEl = document.getElementById('connectionStatus');
             const batchesListEl = document.getElementById('batchesList');
+            const insertDateInput = document.getElementById('insertDate');
+
+            // ضبط تاريخ النتيجة تلقائياً على اليوم لتسهيل العمل
+            insertDateInput.value = new Date().toISOString().split('T')[0];
 
             statusEl.innerText = "متصل بقاعدة البيانات ✅";
             statusEl.style.color = "#27ae60";
 
-            // 1. تسجيل بيض الماكينة وثبيت 17 يوم
+            // 1. تسجيل دفعة جديدة بناءً على النوع والتاريخ المختار
             document.getElementById('addEggsBtn').addEventListener('click', async () => {
                 const qty = parseInt(document.getElementById('eggCount').value);
-                if (!qty) return showMessage("برجاء إدخال عدد البيض", true);
+                const birdType = document.getElementById('birdType').value;
+                const selectedDateVal = insertDateInput.value;
 
-                const today = new Date();
-                const hatchDate = new Date();
-                hatchDate.setDate(today.getDate() + 17); // ميعاد الفقس بعد 17 يوم تلقائي
+                if (!qty) return showMessage("برجاء إدخال عدد البيض", true);
+                if (!selectedDateVal) return showMessage("برجاء اختيار تاريخ الدخول", true);
+
+                const startDate = new Date(selectedDateVal);
+                
+                // تحديد المدد بناء على نوع الطائر
+                let incubatorDays = birdType === 'quail' ? 15 : 25;
+                let hatcherDays = 3;
+                let totalDays = incubatorDays + hatcherDays;
+
+                // حساب التواريخ
+                const hatcherDate = new Date(startDate);
+                hatcherDate.setDate(startDate.getDate() + incubatorDays);
+
+                const hatchDate = new Date(startDate);
+                hatchDate.setDate(startDate.getDate() + totalDays);
 
                 try {
                     const batchRef = push(ref(db, 'incubator_batches'));
                     await set(batchRef, {
+                        type: birdType,
                         quantity: qty,
-                        insertDate: today.toISOString(),
+                        insertDate: startDate.toISOString(),
+                        hatcherDate: hatcherDate.toISOString(),
                         hatchDate: hatchDate.toISOString(),
                         status: 'active'
                     });
-                    hatchDateMsg.innerText = `✅ ميعاد الفقس المتوقع: ${hatchDate.toLocaleDateString('ar-EG')}`;
+                    
+                    const typeText = birdType === 'quail' ? 'السمان' : 'الرومي';
+                    hatchDateMsg.innerText = `✅ دفعة ${typeText}: النقل للمفقس ${hatcherDate.toLocaleDateString('ar-EG')} | الفقس ${hatchDate.toLocaleDateString('ar-EG')}`;
                     document.getElementById('eggCount').value = '';
                     showMessage("تم تسجيل دفعة البيض بنجاح!");
-                } catch (e) { showMessage("خطأ: يرجى التأكد من تفعيل الـ Rules في فايربيز لـ true", true); }
+                } catch (e) { showMessage("خطأ في التسجيل بقاعدة البيانات", true); }
             });
 
             // 2. تحديث الفريزر
@@ -148,7 +186,6 @@
                 const freezerRef = ref(db, "inventory/freezer");
                 const snap = await get(freezerRef);
                 let currentCount = snap.exists() ? snap.val().count : 0;
-                
                 const newCount = currentCount + amount;
                 if (newCount < 0) {
                     showMessage("الرصيد في الفريزر لا يكفي!", true);
@@ -161,11 +198,9 @@
             document.getElementById('addFreezerBtn').addEventListener('click', async () => {
                 const qty = parseInt(document.getElementById('freezerQty').value);
                 if(qty) {
-                    try {
-                        await updateFreezer(qty);
-                        document.getElementById('freezerQty').value = '';
-                        showMessage("تم إضافة الكمية للفريزر بنجاح!");
-                    } catch(e) { showMessage("خطأ في الاتصال", true); }
+                    await updateFreezer(qty);
+                    document.getElementById('freezerQty').value = '';
+                    showMessage("تم إضافة الكمية للفريزر بنجاح!");
                 } else { showMessage("برجاء إدخال الكمية أولاً", true); }
             });
 
@@ -173,31 +208,28 @@
             document.getElementById('sellBtn').addEventListener('click', async () => {
                 const qty = parseInt(document.getElementById('saleQty').value);
                 const price = parseFloat(document.getElementById('salePrice').value);
-                
                 if (!qty || !price) return showMessage("برجاء إدخال الكمية والسعر", true);
 
-                try {
-                    const success = await updateFreezer(-qty);
-                    if (success) {
-                        const today = new Date().toISOString().split('T')[0];
-                        const salesRef = push(ref(db, "sales"));
-                        await set(salesRef, { quantity: qty, price: price, total: qty * price, date: today });
-                        document.getElementById('saleQty').value = '';
-                        document.getElementById('salePrice').value = '';
-                        showMessage("تم البيع وخصم الكمية من الفريزر");
-                    }
-                } catch (e) { showMessage("حدث خطأ أثناء البيع", true); }
+                const success = await updateFreezer(-qty);
+                if (success) {
+                    const today = new Date().toISOString().split('T')[0];
+                    const salesRef = push(ref(db, "sales"));
+                    await set(salesRef, { quantity: qty, price: price, total: qty * price, date: today });
+                    document.getElementById('saleQty').value = '';
+                    document.getElementById('salePrice').value = '';
+                    showMessage("تم البيع وخصم الكمية من الفريزر");
+                }
             });
 
-            // 4. قراءة الفريزر لحظياً وعرض البيانات
+            // 4. قراءة الفريزر لحظياً
             onValue(ref(db, "inventory/freezer"), (snapshot) => {
                 freezerCountEl.innerText = snapshot.exists() ? snapshot.val().count : 0;
             });
 
-            // 5. حساب ومتابعة الدفعات وحساب الأيام المتبقية تلقائياً
+            // 5. متابعة وحساب التواريخ والعداد التنازلي لكل نوع تلقائياً
             onValue(ref(db, "incubator_batches"), (snapshot) => {
                 let total = 0;
-                batchesListEl.innerHTML = ''; // تفريغ القائمة لإعادة البناء
+                batchesListEl.innerHTML = '';
                 
                 if (snapshot.exists()) {
                     snapshot.forEach((child) => {
@@ -205,7 +237,7 @@
                         if(batch.status === 'active') {
                             total += batch.quantity;
 
-                            // حساب الأيام الفاضلة
+                            // حساب الأيام المتبقية للفقس
                             const today = new Date();
                             today.setHours(0,0,0,0);
                             const hatch = new Date(batch.hatchDate);
@@ -215,22 +247,22 @@
                             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
                             let countdownText = '';
-                            if (diffDays > 0) {
-                                countdownText = `فاضل ${diffDays} يوم ⏳`;
-                            } else if (diffDays === 0) {
-                                countdownText = `اليوم ميعاد الفقس! 🐣`;
-                            } else {
-                                countdownText = `مر على ميعاد الفقس`;
-                            }
+                            if (diffDays > 0) { countdownText = `فاضل ${diffDays} يوم ⏳`; }
+                            else if (diffDays === 0) { countdownText = `اليوم ميعاد الفقس! 🐣`; }
+                            else { countdownText = `مر ميعاد الفقس`; }
 
-                            // إنشاء كرت مخصص لكل دفعة سمان بالماكينة
+                            const typeBadge = batch.type === 'quail' 
+                                ? '<span class="badge bg-quail">سمان</span>' 
+                                : '<span class="badge bg-turkey">رومي</span>';
+
                             const item = document.createElement('div');
-                            item.className = 'batch-item';
+                            item.className = `batch-item ${batch.type === 'turkey' ? 'batch-turkey' : ''}`;
                             item.innerHTML = `
                                 <span class="batch-days">${countdownText}</span>
-                                <strong>دفعة: ${batch.quantity} بيضة</strong><br>
-                                📥 دخلت الماكينة: ${new Date(batch.insertDate).toLocaleDateString('ar-EG')}<br>
-                                🐣 ميعاد الخروج (الفقس): ${new Date(batch.hatchDate).toLocaleDateString('ar-EG')}
+                                ${typeBadge} <strong>دفعة: ${batch.quantity} بيضة</strong><br>
+                                📥 تاريخ الدخول المختار: ${new Date(batch.insertDate).toLocaleDateString('ar-EG')}<br>
+                                📦 ميعاد النقل للمفقس: ${new Date(batch.hatcherDate).toLocaleDateString('ar-EG')}<br>
+                                🐣 ميعاد الفقس والنزول: ${new Date(batch.hatchDate).toLocaleDateString('ar-EG')}
                             `;
                             batchesListEl.appendChild(item);
                         }
@@ -241,7 +273,7 @@
                 totalEggsEl.innerText = total;
             });
 
-            // 6. حساب المبيعات اليومية
+            // 6. المبيعات اليومية
             const todayStr = new Date().toISOString().split('T')[0];
             const salesQuery = query(ref(db, "sales"), orderByChild("date"), equalTo(todayStr));
             onValue(salesQuery, (snapshot) => {
