@@ -82,8 +82,9 @@
     </div>
 
     <script type="module">
+        // استدعاء مكتبات Realtime Database بدلاً من Firestore
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, doc, getDoc, setDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getDatabase, ref, set, get, push, onValue, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
         function showMessage(text, isError = false) {
             const msgBox = document.getElementById('notificationBox');
@@ -93,10 +94,11 @@
             setTimeout(() => { msgBox.style.display = 'none'; }, 3000);
         }
 
-        // مفاتيح مشروعك الجديد
+        // المفاتيح مع إضافة رابط الـ Realtime Database
         const firebaseConfig = {
           apiKey: "AIzaSyCVlbWLaLqYnQVsWgFPTe4PL38bWLTLyuU",
           authDomain: "sman-6512c.firebaseapp.com",
+          databaseURL: "https://sman-6512c-default-rtdb.firebaseio.com",
           projectId: "sman-6512c",
           storageBucket: "sman-6512c.firebasestorage.app",
           messagingSenderId: "64902261641",
@@ -105,7 +107,7 @@
 
         try {
             const app = initializeApp(firebaseConfig);
-            const db = getFirestore(app);
+            const db = getDatabase(app);
 
             const totalEggsEl = document.getElementById('totalEggs');
             const freezerCountEl = document.getElementById('freezerCount');
@@ -116,6 +118,7 @@
             statusEl.innerText = "متصل بقاعدة البيانات ✅";
             statusEl.style.color = "#27ae60";
 
+            // 1. الماكينة
             document.getElementById('addEggsBtn').addEventListener('click', async () => {
                 const qty = parseInt(document.getElementById('eggCount').value);
                 if (!qty) return showMessage("برجاء إدخال عدد البيض", true);
@@ -125,7 +128,8 @@
                 hatchDate.setDate(today.getDate() + 17);
 
                 try {
-                    await addDoc(collection(db, "incubator_batches"), {
+                    const batchRef = push(ref(db, 'incubator_batches'));
+                    await set(batchRef, {
                         quantity: qty,
                         insertDate: today.toISOString(),
                         hatchDate: hatchDate.toISOString(),
@@ -134,20 +138,21 @@
                     hatchDateMsg.innerText = `✅ ميعاد الفقس: ${hatchDate.toLocaleDateString('ar-EG')}`;
                     document.getElementById('eggCount').value = '';
                     showMessage("تم تسجيل الدفعة بنجاح!");
-                } catch (e) { showMessage("خطأ: تأكد من تفعيل Firestore في وضع Test Mode", true); }
+                } catch (e) { showMessage("خطأ: تأكد من تعديل الـ Rules لـ true", true); console.error(e);}
             });
 
+            // 2. الفريزر
             async function updateFreezer(amount) {
-                const freezerRef = doc(db, "inventory", "freezer");
-                const snap = await getDoc(freezerRef);
-                let currentCount = snap.exists() ? snap.data().count : 0;
+                const freezerRef = ref(db, "inventory/freezer");
+                const snap = await get(freezerRef);
+                let currentCount = snap.exists() ? snap.val().count : 0;
                 
                 const newCount = currentCount + amount;
                 if (newCount < 0) {
                     showMessage("الرصيد في الفريزر لا يكفي!", true);
                     return false;
                 }
-                await setDoc(freezerRef, { count: newCount });
+                await set(freezerRef, { count: newCount });
                 return true;
             }
 
@@ -162,6 +167,7 @@
                 } else { showMessage("برجاء إدخال الكمية أولاً", true); }
             });
 
+            // 3. المبيعات
             document.getElementById('sellBtn').addEventListener('click', async () => {
                 const qty = parseInt(document.getElementById('saleQty').value);
                 const price = parseFloat(document.getElementById('salePrice').value);
@@ -172,7 +178,8 @@
                     const success = await updateFreezer(-qty);
                     if (success) {
                         const today = new Date().toISOString().split('T')[0];
-                        await addDoc(collection(db, "sales"), { quantity: qty, price: price, total: qty * price, date: today });
+                        const salesRef = push(ref(db, "sales"));
+                        await set(salesRef, { quantity: qty, price: price, total: qty * price, date: today });
                         document.getElementById('saleQty').value = '';
                         document.getElementById('salePrice').value = '';
                         showMessage("تم البيع وخصم الكمية من الفريزر");
@@ -180,24 +187,27 @@
                 } catch (e) { showMessage("حدث خطأ أثناء البيع", true); }
             });
 
-            onSnapshot(doc(db, "inventory", "freezer"), (doc) => {
-                freezerCountEl.innerText = doc.exists() ? doc.data().count : 0;
+            // 4. تحديث الأرقام لحظياً
+            onValue(ref(db, "inventory/freezer"), (snapshot) => {
+                freezerCountEl.innerText = snapshot.exists() ? snapshot.val().count : 0;
             }, (error) => {
-                statusEl.innerText = "❌ خطأ في صلاحيات قاعدة البيانات (فعل Test Mode)";
+                statusEl.innerText = "❌ خطأ في صلاحيات قاعدة البيانات (عدّل الـ Rules)";
                 statusEl.style.color = "red";
             });
 
-            onSnapshot(collection(db, "incubator_batches"), (snapshot) => {
+            onValue(ref(db, "incubator_batches"), (snapshot) => {
                 let total = 0;
-                snapshot.forEach((doc) => { if(doc.data().status === 'active') total += doc.data().quantity; });
+                snapshot.forEach((child) => { 
+                    if(child.val().status === 'active') total += child.val().quantity; 
+                });
                 totalEggsEl.innerText = total;
             });
 
             const todayStr = new Date().toISOString().split('T')[0];
-            const salesQuery = query(collection(db, "sales"), where("date", "==", todayStr));
-            onSnapshot(salesQuery, (snapshot) => {
+            const salesQuery = query(ref(db, "sales"), orderByChild("date"), equalTo(todayStr));
+            onValue(salesQuery, (snapshot) => {
                 let dailyTotal = 0;
-                snapshot.forEach((doc) => { dailyTotal += doc.data().total; });
+                snapshot.forEach((child) => { dailyTotal += child.val().total; });
                 totalSalesEl.innerText = dailyTotal;
             });
 
