@@ -6,44 +6,53 @@
     <title>إدارة مزرعة سمان ههيا المتكاملة</title>
     <style>
         :root { --primary: #2c3e50; --success: #27ae60; --warning: #d35400; --info: #2980b9; --purple: #8e44ad; --danger: #c0392b; --bg: #f4f7f6; }
-        body { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; margin: 0; padding: 15px; background-color: var(--bg); padding-top: 20px; padding-bottom: 80px;}
-        .card { background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-top: 4px solid var(--primary); }
-        h2 { color: var(--primary); margin-top: 0; font-size: 18px; border-bottom: 2px solid #eee; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center;}
-        input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 14px;}
-        button { color: white; border: none; padding: 12px; border-radius: 8px; width: 100%; font-size: 15px; cursor: pointer; font-weight: bold; margin-top: 5px; transition: 0.2s; }
+        
+        /* تكبير الخطوط وتوسيع المسافات لراحة العين */
+        body { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; margin: 0; padding: 15px; background-color: var(--bg); padding-top: 20px; padding-bottom: 80px; font-size: 16px;}
+        
+        .card { background: white; padding: 25px; border-radius: 12px; margin-bottom: 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); border-top: 5px solid var(--primary); }
+        
+        h2 { color: var(--primary); margin-top: 0; font-size: 22px; border-bottom: 2px solid #eee; padding-bottom: 12px; display: flex; justify-content: space-between; align-items: center;}
+        
+        /* تكبير خانات الإدخال والزراير */
+        input, select { width: 100%; padding: 15px; margin: 10px 0 15px 0; border: 2px solid #e0e0e0; border-radius: 8px; box-sizing: border-box; font-size: 16px; font-weight: bold; color: #333;}
+        input:focus, select:focus { border-color: var(--info); outline: none; }
+        
+        button { color: white; border: none; padding: 15px; border-radius: 8px; width: 100%; font-size: 18px; cursor: pointer; font-weight: bold; margin-top: 5px; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.1);}
         button:active { transform: scale(0.98); }
+        
         .btn-green { background: var(--success); } .btn-blue { background: var(--info); } .btn-purple { background: var(--purple); } .btn-red { background: var(--danger); } .btn-gray { background: #7f8c8d; }
         
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 10px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 15px; }
         
-        .stat-box { background: #ecf0f1; padding: 15px; text-align: center; border-radius: 8px; border-bottom: 3px solid var(--primary);}
-        .stat-num { display: block; font-size: 20px; font-weight: bold; color: var(--warning); margin-top: 5px;}
+        .stat-box { background: #ecf0f1; padding: 18px; text-align: center; border-radius: 10px; border-bottom: 4px solid var(--primary);}
+        .stat-num { display: block; font-size: 26px; font-weight: bold; color: var(--warning); margin-top: 8px;}
         
-        /* تصميم كروت الدفعات والعداد التنازلي */
-        .batch-item { background: #fff; padding: 15px; border-radius: 8px; margin-top: 15px; border: 1px solid #eee; border-right: 5px solid var(--warning); font-size: 14px; line-height: 1.6; position: relative; box-shadow: 0 2px 5px rgba(0,0,0,0.04);}
+        /* تصميم كروت الدفعات */
+        .batch-item { background: #fff; padding: 18px; border-radius: 10px; margin-top: 15px; border: 1px solid #e8e8e8; border-right: 6px solid var(--warning); font-size: 15px; line-height: 1.8; position: relative; box-shadow: 0 3px 6px rgba(0,0,0,0.05);}
         .batch-turkey { border-right-color: var(--purple) !important; }
-        .batch-rearing { border-right-color: var(--info); background: #fdfefe;}
+        .batch-rearing { border-right-color: var(--info); background: #f4faff;}
         .batch-completed { border-right-color: var(--success); opacity: 0.9; background: #f9fdfa;}
         
-        .batch-days { float: left; color: var(--warning); font-weight: bold; background: #fce4d6; padding: 4px 8px; border-radius: 6px; font-size: 12px; border: 1px solid #f9cbb0;}
-        .badge { display: inline-block; padding: 3px 8px; border-radius: 4px; color: white; font-size: 11px; font-weight: bold; margin-bottom: 5px;}
+        .batch-days { float: left; color: var(--warning); font-weight: bold; background: #fce4d6; padding: 6px 10px; border-radius: 6px; font-size: 14px; border: 1px solid #f9cbb0;}
+        .badge { display: inline-block; padding: 4px 10px; border-radius: 6px; color: white; font-size: 13px; font-weight: bold; margin-bottom: 8px;}
         .bg-quail { background: var(--success); }
         .bg-turkey { background: var(--purple); }
 
         /* Modal */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; justify-content: center; align-items: flex-end; }
-        .modal-content { background: white; width: 100%; max-width: 500px; border-radius: 20px 20px 0 0; padding: 20px; box-sizing: border-box; max-height: 90vh; overflow-y: auto; animation: slideUp 0.3s ease-out; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 2000; justify-content: center; align-items: flex-end; }
+        .modal-content { background: white; width: 100%; max-width: 600px; border-radius: 25px 25px 0 0; padding: 25px; box-sizing: border-box; max-height: 90vh; overflow-y: auto; animation: slideUp 0.3s ease-out; }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        .close-btn { float: left; background: none; border: none; color: #333; font-size: 24px; cursor: pointer; width: auto; padding: 0;}
+        .close-btn { float: left; background: #f1f2f6; border: none; color: #333; font-size: 24px; cursor: pointer; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 0;}
 
-        /* التصنيفات */
-        .grade-input { display: flex; align-items: center; justify-content: space-between; background: #f8f9fa; padding: 8px 12px; border-radius: 6px; margin-bottom: 5px; }
-        .grade-input label { font-weight: bold; font-size: 14px; color: #34495e; }
-        .grade-input input { width: 80px; margin: 0; padding: 6px; text-align: center; }
+        /* التصنيفات داخل الإدارة */
+        .grade-input { display: flex; align-items: center; justify-content: space-between; background: #f8f9fa; padding: 12px 15px; border-radius: 8px; margin-bottom: 8px; border: 1px solid #eee;}
+        .grade-input label { font-weight: bold; font-size: 16px; color: #34495e; }
+        .grade-input input { width: 100px; margin: 0; padding: 10px; text-align: center; font-size: 18px;}
 
-        #notificationBox { display: none; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); color: white; padding: 12px 25px; border-radius: 8px; z-index: 3000; font-weight: bold; text-align: center; width: 80%; max-width: 350px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-        #connectionStatus { text-align: center; font-size: 12px; margin-top: -10px; margin-bottom: 15px; font-weight: bold; color: #7f8c8d; }
+        #notificationBox { display: none; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); color: white; padding: 15px 30px; border-radius: 10px; z-index: 3000; font-size: 16px; font-weight: bold; text-align: center; width: 85%; max-width: 400px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        #connectionStatus { text-align: center; font-size: 14px; margin-top: -10px; margin-bottom: 15px; font-weight: bold; color: #7f8c8d; }
     </style>
 </head>
 <body>
@@ -55,77 +64,93 @@
         <h2>❄️ الفريزر (الجرد التفصيلي)</h2>
         <div class="grid-3" id="freezerGrid"></div>
         
-        <h3 style="font-size: 15px; color: var(--primary); margin-top: 20px;">💰 المبيعات اليومية</h3>
+        <h3 style="font-size: 18px; color: var(--primary); margin-top: 25px; border-bottom: 1px solid #eee; padding-bottom: 10px;">💰 المبيعات اليومية</h3>
         <div class="grid-2">
-            <select id="saleGrade">
-                <option value="royal">رويال</option>
-                <option value="super_special">سوبر سبشيال</option>
-                <option value="special">سبشيال</option>
-                <option value="jumbo">جامبو</option>
-                <option value="super">سوبر</option>
-                <option value="excellent">ممتاز (صغير)</option>
-                <option value="bad">بايظ (درجة تانية)</option>
-            </select>
-            <input type="number" id="saleQty" placeholder="العدد (جوز)">
+            <div>
+                <label style="font-weight: bold; font-size: 14px; color: #555;">الصنف:</label>
+                <select id="saleGrade">
+                    <option value="royal">رويال</option>
+                    <option value="super_special">سوبر سبشيال</option>
+                    <option value="special">سبشيال</option>
+                    <option value="jumbo">جامبو</option>
+                    <option value="super">سوبر</option>
+                    <option value="excellent">ممتاز (صغير)</option>
+                    <option value="bad">بايظ (درجة تانية)</option>
+                </select>
+            </div>
+            <div>
+                <label style="font-weight: bold; font-size: 14px; color: #555;">العدد المباع (جوز):</label>
+                <input type="number" id="saleQty" placeholder="أدخل العدد">
+            </div>
         </div>
+        
+        <label style="font-weight: bold; font-size: 14px; color: #555;">سعر الجوز (يتحدث تلقائياً ويمكن تعديله):</label>
         <input type="number" id="salePrice" placeholder="سعر الجوز (جنيه)">
-        <button id="sellBtn" class="btn-purple">تسجيل البيع وخصم من الفريزر</button>
-        <div class="stat-box" style="margin-top: 10px; padding: 10px;">إجمالي المبيعات اليوم<span class="stat-num" id="totalSales" style="color: var(--success);">0 ج.م</span></div>
+        
+        <button id="sellBtn" class="btn-purple" style="padding: 18px;">تسجيل البيع وخصم من الفريزر</button>
+        <div class="stat-box" style="margin-top: 15px; padding: 15px;">إجمالي مبيعات اليوم<span class="stat-num" id="totalSales" style="color: var(--success); font-size: 30px;">0 ج.م</span></div>
     </div>
 
     <div class="card" style="border-top-color: var(--warning);">
         <h2>🥚 إضافة بيض للماكينة</h2>
         <div class="grid-2">
             <div>
-                <label style="font-size: 12px; font-weight: bold;">النوع:</label>
+                <label style="font-weight: bold; font-size: 14px; color: #555;">النوع:</label>
                 <select id="birdType">
                     <option value="quail">سمان</option>
                     <option value="turkey">رومي</option>
                 </select>
             </div>
             <div>
-                <label style="font-size: 12px; font-weight: bold;">تاريخ الدخول:</label>
+                <label style="font-weight: bold; font-size: 14px; color: #555;">تاريخ الدخول:</label>
                 <input type="date" id="insertDate">
             </div>
         </div>
-        <input type="number" id="eggCount" placeholder="إجمالي عدد البيض المضاف">
-        <button id="addEggsBtn" class="btn-green">تسجيل الدفعة وحساب التواريخ</button>
+        <label style="font-weight: bold; font-size: 14px; color: #555;">إجمالي عدد البيض:</label>
+        <input type="number" id="eggCount" placeholder="أدخل عدد البيض (مثال: 500)">
+        <button id="addEggsBtn" class="btn-green" style="padding: 18px;">تسجيل الدفعة بالماكينة</button>
     </div>
 
     <div class="card" style="border-top-color: var(--success);">
         <h2>
-            📋 الدفعات الحالية (ماكينة وتربية)
-            <button id="openArchiveBtn" class="btn-gray" style="width: auto; padding: 5px 10px; font-size: 12px; margin: 0;">الأرشيف</button>
+            📋 متابعة الدفعات 
+            <button id="openArchiveBtn" class="btn-gray" style="width: auto; padding: 8px 15px; font-size: 14px; margin: 0; border-radius: 8px;">الأرشيف</button>
         </h2>
-        <div id="batchesList"><p style="text-align: center; color: #7f8c8d;">لا توجد دفعات حالياً</p></div>
+        <div id="batchesList"><p style="text-align: center; color: #7f8c8d; font-size: 18px;">لا توجد دفعات حالياً</p></div>
     </div>
 
     <div id="batchModal" class="modal-overlay">
         <div class="modal-content">
             <button class="close-btn" onclick="closeModal()">×</button>
-            <h2 id="modalTitle" style="border-bottom: none; margin-bottom: 5px;">إدارة الدفعة</h2>
-            <div id="modalDetails" style="font-size: 13px; color: #7f8c8d; margin-bottom: 15px; line-height: 1.6;"></div>
+            <h2 id="modalTitle" style="border-bottom: none; margin-bottom: 5px; font-size: 24px;">إدارة الدفعة</h2>
+            <div id="modalDetails" style="font-size: 15px; color: #555; margin-bottom: 15px; line-height: 1.8; background: #f9f9f9; padding: 15px; border-radius: 8px;"></div>
 
             <div id="incubatorSection" style="display: none; border-top: 2px solid #eee; margin-top: 15px; padding-top: 15px;">
-                <h3 style="font-size: 15px; color: var(--info); margin-top: 0;">🐣 إتمام عملية الفقس والنقل للتربية</h3>
-                <label style="font-size: 13px; font-weight: bold; color: var(--danger);">عدد البيض الفاسد (اللايح / كبس):</label>
-                <input type="number" id="badEggsCount" placeholder="أدخل العدد (مثال: 50)">
-                <button id="moveToRearingBtn" class="btn-blue">نقل للتربية وحفظ نسبة الفقس</button>
+                <h3 style="font-size: 18px; color: var(--info); margin-top: 0;">🐣 إتمام عملية الفقس</h3>
+                <label style="font-size: 15px; font-weight: bold; color: var(--success); display: block; margin-bottom: 5px;">عدد الكتاكيت السليمة (الفاقسة بنجاح):</label>
+                <input type="number" id="hatchedChicksCount" placeholder="أدخل عدد الكتاكيت السليمة">
+                <button id="moveToRearingBtn" class="btn-blue" style="padding: 15px;">نقل للتربية وحفظ نسبة النجاح</button>
             </div>
 
             <div id="rearingSection" style="display: none; border-top: 2px solid #eee; margin-top: 15px; padding-top: 15px;">
-                <h3 style="font-size: 15px; color: var(--purple); margin-top: 0;">🌾 خطة العلف والتربية</h3>
+                <h3 style="font-size: 18px; color: var(--purple); margin-top: 0;">🌾 خطة العلف والتربية</h3>
                 <div class="grid-2">
-                    <input type="number" id="feedAmount" placeholder="العلف المستهلك (كجم)">
-                    <input type="number" id="feedCost" placeholder="تكلفة العلف (جنيه)">
+                    <div>
+                        <label style="font-size: 13px; font-weight:bold; color:#555;">العلف المستهلك (كجم)</label>
+                        <input type="number" id="feedAmount" placeholder="الكمية">
+                    </div>
+                    <div>
+                        <label style="font-size: 13px; font-weight:bold; color:#555;">تكلفة العلف (جنيه)</label>
+                        <input type="number" id="feedCost" placeholder="التكلفة">
+                    </div>
                 </div>
                 
-                <label style="font-size: 13px; font-weight: bold; color: var(--danger); margin-top: 10px; display: block;">النافق خلال دورة التربية (طائر):</label>
+                <label style="font-size: 15px; font-weight: bold; color: var(--danger); margin-top: 10px; display: block;">النافق خلال دورة التربية (طائر):</label>
                 <input type="number" id="deadBirdsCount" placeholder="أدخل عدد النافق">
 
-                <h3 style="font-size: 15px; color: var(--danger); margin-top: 15px;">🔪 تصنيف الدبح (العدد بالجوز)</h3>
+                <h3 style="font-size: 18px; color: var(--danger); margin-top: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px;">🔪 تصنيف الدبح (العدد بالجوز)</h3>
                 <div id="slaughterGrades">
-                    <div class="grade-input"><label>👑 رويال (أكبر حاجة)</label><input type="number" id="g_royal" value="0" min="0"></div>
+                    <div class="grade-input"><label>👑 رويال</label><input type="number" id="g_royal" value="0" min="0"></div>
                     <div class="grade-input"><label>🌟 سوبر سبشيال</label><input type="number" id="g_super_special" value="0" min="0"></div>
                     <div class="grade-input"><label>✨ سبشيال</label><input type="number" id="g_special" value="0" min="0"></div>
                     <div class="grade-input"><label>💪 جامبو</label><input type="number" id="g_jumbo" value="0" min="0"></div>
@@ -133,17 +158,17 @@
                     <div class="grade-input"><label>👌 ممتاز (صغير)</label><input type="number" id="g_excellent" value="0" min="0"></div>
                     <div class="grade-input"><label>❌ بايظ / فرز</label><input type="number" id="g_bad" value="0" min="0"></div>
                 </div>
-                <button id="finishBatchBtn" class="btn-green" style="margin-top: 15px;">✅ إنهاء وتوريد للفريزر</button>
+                <button id="finishBatchBtn" class="btn-green" style="margin-top: 20px; padding: 18px; font-size: 18px;">✅ إنهاء وتوريد للفريزر</button>
             </div>
             
-            <button id="deleteBatchBtn" class="btn-red" style="margin-top: 20px; background: transparent; border: 1px solid var(--danger); color: var(--danger);">🗑️ حذف الدفعة نهائياً</button>
+            <button id="deleteBatchBtn" class="btn-red" style="margin-top: 25px; background: transparent; border: 2px solid var(--danger); color: var(--danger);">🗑️ حذف الدفعة نهائياً</button>
         </div>
     </div>
 
     <div id="archiveModal" class="modal-overlay">
         <div class="modal-content" style="height: 85vh;">
             <button class="close-btn" onclick="closeArchiveModal()">×</button>
-            <h2 style="color: var(--primary);">📚 أرشيف الدفعات المكتملة</h2>
+            <h2 style="color: var(--primary); font-size: 22px;">📚 أرشيف الدفعات المكتملة</h2>
             <div id="archiveList" style="margin-top: 15px;"></div>
         </div>
     </div>
@@ -165,7 +190,30 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
+        // إعدادات واجهة المستخدم المبدئية
         document.getElementById('insertDate').value = new Date().toISOString().split('T')[0];
+        
+        // أسعار الأصناف الافتراضية
+        const defaultPrices = {
+            royal: 145,
+            super_special: 135,
+            special: 125,
+            jumbo: 115,
+            super: 105,
+            excellent: 100,
+            bad: 0
+        };
+
+        // تعيين السعر الافتراضي عند فتح التطبيق
+        const salePriceInput = document.getElementById('salePrice');
+        const saleGradeSelect = document.getElementById('saleGrade');
+        salePriceInput.value = defaultPrices[saleGradeSelect.value];
+
+        // تغيير السعر تلقائياً عند تغيير الصنف
+        saleGradeSelect.addEventListener('change', (e) => {
+            salePriceInput.value = defaultPrices[e.target.value];
+        });
+
         let currentBatches = {};
         let currentEditingId = null;
 
@@ -183,7 +231,7 @@
 
         const gradeNames = { royal: 'رويال', super_special: 'سوبر سبشيال', special: 'سبشيال', jumbo: 'جامبو', super: 'سوبر', excellent: 'ممتاز', bad: 'بايظ' };
         
-        // 1. تسجيل الدفعة بالتواريخ الدقيقة
+        // 1. تسجيل الدفعة
         document.getElementById('addEggsBtn').addEventListener('click', async () => {
             const qty = parseInt(document.getElementById('eggCount').value);
             const birdType = document.getElementById('birdType').value;
@@ -211,11 +259,11 @@
                     status: 'incubator'
                 });
                 document.getElementById('eggCount').value = '';
-                showMessage("✅ تم تسجيل الدفعة وحساب التواريخ بنجاح");
+                showMessage("✅ تم تسجيل الدفعة بالماكينة");
             } catch (e) { showMessage("خطأ في التسجيل", true); }
         });
 
-        // 2. عرض الدفعات بالعدادات والتواريخ الصارمة
+        // 2. عرض الدفعات
         onValue(ref(db, "batches"), (snapshot) => {
             const batchesList = document.getElementById('batchesList');
             const archiveList = document.getElementById('archiveList');
@@ -232,7 +280,6 @@
                     const b = child.val();
                     currentBatches[id] = b;
 
-                    // حساب العداد التنازلي أو العمر
                     const today = new Date();
                     today.setHours(0,0,0,0);
                     const hatchD = new Date(b.hatchDate);
@@ -243,7 +290,7 @@
                     if (b.status === 'incubator') {
                         if (diffDays > 0) countdownText = `فاضل ${diffDays} يوم ⏳`;
                         else if (diffDays === 0) countdownText = `اليوم ميعاد الفقس! 🐣`;
-                        else countdownText = `مر على الفقس ${Math.abs(diffDays)} يوم`;
+                        else countdownText = `تجاوز الفقس ${Math.abs(diffDays)} يوم`;
                     } else if (b.status === 'rearing') {
                         const ageDays = Math.floor((new Date() - hatchD) / (1000 * 60 * 60 * 24));
                         countdownText = `العمر: ${Math.max(0, ageDays)} يوم 🐥`;
@@ -261,40 +308,39 @@
                         contentHtml = `
                             <div class="${mainClass}">
                                 <span class="batch-days">${countdownText}</span>
-                                <div style="clear:both; margin-bottom: 8px;"></div>
-                                ${typeBadge} <strong style="color: var(--primary);">العدد الأصلي: ${b.quantity} بيضة</strong><br>
-                                <div style="margin-top: 8px; font-size: 13px; color: #555;">
-                                    📥 <b>تاريخ الدخول:</b> ${new Date(b.insertDate).toLocaleDateString('ar-EG')}<br>
-                                    📦 <b>النقل للمفقس:</b> <span style="color: var(--info); font-weight:bold;">${hDateStr}</span><br>
-                                    🐣 <b>ميعاد الفقس:</b> <span style="color: var(--success); font-weight:bold;">${new Date(b.hatchDate).toLocaleDateString('ar-EG')}</span>
+                                <div style="clear:both; margin-bottom: 10px;"></div>
+                                ${typeBadge} <strong style="color: var(--primary); font-size: 16px;">العدد الأصلي: ${b.quantity} بيضة</strong><br>
+                                <div style="margin-top: 10px; font-size: 14px; color: #444; background: #fafafa; padding: 10px; border-radius: 8px;">
+                                    📥 <b>الدخول:</b> ${new Date(b.insertDate).toLocaleDateString('ar-EG')}<br>
+                                    📦 <b>المفقس:</b> <span style="color: var(--info); font-weight:bold;">${hDateStr}</span><br>
+                                    🐣 <b>الفقس:</b> <span style="color: var(--success); font-weight:bold;">${new Date(b.hatchDate).toLocaleDateString('ar-EG')}</span>
                                 </div>
-                                <button onclick="openBatchDetails('${id}')" style="margin-top: 10px; font-size: 13px; background: var(--primary); padding: 8px;">⚙️ تحديث حالة الدفعة</button>
+                                <button onclick="openBatchDetails('${id}')" style="margin-top: 15px; font-size: 15px; background: var(--primary);">⚙️ إدارة وتحديث الحالة</button>
                             </div>
                         `;
                         batchesList.insertAdjacentHTML('beforeend', contentHtml);
                         hasActive = true;
                     } else {
-                        // كارت الأرشيف مع نسبة الفقس
                         const hatchRate = b.hatchedCount ? Math.round((b.hatchedCount / b.quantity) * 100) : 0;
                         contentHtml = `
                             <div class="${mainClass}">
-                                ${typeBadge} <strong>دفعة مكتملة (${new Date(b.insertDate).toLocaleDateString('ar-EG')})</strong><br>
-                                <div style="margin-top: 5px; font-size: 13px;">
-                                    🥚 إجمالي البيض: ${b.quantity} | 🐣 فقس: ${b.hatchedCount || 'غير محدد'} (نجاح ${hatchRate}%)<br>
-                                    ❌ نافق التربية: <span style="color: var(--danger);">${b.deadBirds || 0} طائر</span><br>
+                                ${typeBadge} <strong style="font-size: 16px;">دفعة مكتملة (${new Date(b.insertDate).toLocaleDateString('ar-EG')})</strong><br>
+                                <div style="margin-top: 8px; font-size: 14px; background: #fff; padding: 10px; border-radius: 8px; border: 1px solid #eee;">
+                                    🥚 إجمالي البيض: ${b.quantity} | 🐣 الكتاكيت السليمة: ${b.hatchedCount || 'غير محدد'} (نسبة النجاح ${hatchRate}%)<br>
+                                    ❌ نافق التربية: <span style="color: var(--danger); font-weight: bold;">${b.deadBirds || 0} طائر</span><br>
                                     ⚖️ العلف المستهلك: ${b.feedKg || 0} كجم (بتكلفة ${b.feedCost || 0} ج.م)
                                 </div>
-                                <button onclick="openBatchDetails('${id}')" style="margin-top: 10px; font-size: 13px; background: var(--primary); padding: 6px;">عرض تفاصيل الدبح</button>
+                                <button onclick="openBatchDetails('${id}')" style="margin-top: 12px; font-size: 14px; background: var(--primary);">عرض تفاصيل الدبح</button>
                             </div>
                         `;
-                        archiveList.insertAdjacentHTML('afterbegin', contentHtml); // Add to top
+                        archiveList.insertAdjacentHTML('afterbegin', contentHtml);
                         hasArchived = true;
                     }
                 });
             }
 
-            if(!hasActive) batchesList.innerHTML = '<p style="text-align:center; color:#7f8c8d; font-weight:bold;">لا توجد دفعات بالماكينة حالياً</p>';
-            if(!hasArchived) archiveList.innerHTML = '<p style="text-align:center; color:#7f8c8d;">الأرشيف فارغ</p>';
+            if(!hasActive) batchesList.innerHTML = '<p style="text-align:center; color:#7f8c8d; font-weight:bold; font-size: 16px;">لا توجد دفعات بالماكينة حالياً</p>';
+            if(!hasArchived) archiveList.innerHTML = '<p style="text-align:center; color:#7f8c8d; font-size: 16px;">الأرشيف فارغ</p>';
         });
 
         // 3. إدارة الدفعة (Modal)
@@ -306,17 +352,21 @@
             
             const hDateStr = b.hatcherDate ? new Date(b.hatcherDate).toLocaleDateString('ar-EG') : 'غير محدد';
             document.getElementById('modalDetails').innerHTML = `
-                <b>العدد الأصلي:</b> ${b.quantity} بيضة<br>
-                <b>تاريخ الدخول:</b> ${new Date(b.insertDate).toLocaleDateString('ar-EG')}<br>
-                <b>تاريخ النقل للمفقس:</b> ${hDateStr}<br>
-                <b>تاريخ الفقس المتوقع:</b> <span style="color: var(--success); font-weight:bold;">${new Date(b.hatchDate).toLocaleDateString('ar-EG')}</span>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                    <span><b>العدد الأصلي:</b> <span style="color:var(--primary); font-size: 16px; font-weight:bold;">${b.quantity}</span> بيضة</span>
+                    <span><b>الدخول:</b> ${new Date(b.insertDate).toLocaleDateString('ar-EG')}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span><b>النقل للمفقس:</b> ${hDateStr}</span>
+                    <span><b>الفقس:</b> <span style="color: var(--success); font-weight:bold;">${new Date(b.hatchDate).toLocaleDateString('ar-EG')}</span></span>
+                </div>
             `;
 
             const incSec = document.getElementById('incubatorSection');
             const rearSec = document.getElementById('rearingSection');
 
             // تصفير الخانات
-            document.getElementById('badEggsCount').value = '';
+            document.getElementById('hatchedChicksCount').value = '';
             document.getElementById('deadBirdsCount').value = b.deadBirds || '';
             document.getElementById('feedAmount').value = b.feedKg || '';
             document.getElementById('feedCost').value = b.feedCost || '';
@@ -351,14 +401,15 @@
             }
         };
 
-        // النقل للتربية وحساب نسبة الفقس
+        // النقل للتربية وحساب الكتاكيت السليمة
         document.getElementById('moveToRearingBtn').onclick = async () => {
-            const badEggs = parseInt(document.getElementById('badEggsCount').value) || 0;
+            const hatchedCount = parseInt(document.getElementById('hatchedChicksCount').value) || 0;
             const b = currentBatches[currentEditingId];
             
-            if(badEggs > b.quantity) return showMessage("عدد الفاسد أكبر من عدد الدفعة الأصلي!", true);
+            if(hatchedCount === 0) return showMessage("برجاء إدخال عدد الكتاكيت!", true);
+            if(hatchedCount > b.quantity) return showMessage("العدد أكبر من البيض الأصلي للدفعة!", true);
             
-            const hatchedCount = b.quantity - badEggs;
+            const badEggs = b.quantity - hatchedCount; // لحساب الفاسد في الخلفية
             
             await update(ref(db, `batches/${currentEditingId}`), { 
                 status: 'rearing',
@@ -366,10 +417,10 @@
                 hatchedCount: hatchedCount 
             });
             closeModal();
-            showMessage(`✅ تمت عملية الفقس (نجاح ${hatchedCount} طائر)`);
+            showMessage(`✅ تم النقل للتربية (نسبة النجاح: ${Math.round((hatchedCount/b.quantity)*100)}%)`);
         };
 
-        // الدبح والتوريد وحفظ النافق
+        // الدبح والتوريد
         document.getElementById('finishBatchBtn').onclick = async () => {
             const feedKg = parseFloat(document.getElementById('feedAmount').value) || 0;
             const feedCost = parseFloat(document.getElementById('feedCost').value) || 0;
@@ -383,7 +434,7 @@
                 totalSlaughtered += val;
             });
 
-            if (totalSlaughtered === 0) return showMessage("برجاء إدخال أعداد الدبح في الأصناف", true);
+            if (totalSlaughtered === 0) return showMessage("برجاء إدخال أعداد الدبح", true);
 
             try {
                 const freezerRef = ref(db, "inventory/freezer");
@@ -405,11 +456,11 @@
                 });
 
                 closeModal();
-                showMessage("🎉 تم إنهاء الدفعة وتوريدها للفريزر بنجاح!");
-            } catch (e) { showMessage("حدث خطأ أثناء الحفظ", true); }
+                showMessage("🎉 تم التوريد للفريزر بنجاح!");
+            } catch (e) { showMessage("حدث خطأ", true); }
         };
 
-        // قراءة الفريزر والمبيعات
+        // قراءة الفريزر
         onValue(ref(db, "inventory/freezer"), (snapshot) => {
             const fGrid = document.getElementById('freezerGrid');
             fGrid.innerHTML = '';
@@ -419,14 +470,15 @@
                 let count = data[g] || 0;
                 let color = g === 'bad' ? '#c0392b' : (count > 0 ? '#27ae60' : '#7f8c8d');
                 fGrid.innerHTML += `
-                    <div style="background: #fff; border: 1px solid #ddd; padding: 10px; border-radius: 8px; text-align: center;">
-                        <span style="display: block; font-size: 11px; font-weight: bold; color: #34495e; margin-bottom: 5px;">${gradeNames[g]}</span>
-                        <strong style="font-size: 18px; color: ${color};">${count}</strong>
+                    <div style="background: #fff; border: 1px solid #e8e8e8; padding: 15px 10px; border-radius: 10px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                        <span style="display: block; font-size: 14px; font-weight: bold; color: #34495e; margin-bottom: 8px;">${gradeNames[g]}</span>
+                        <strong style="font-size: 22px; color: ${color};">${count}</strong>
                     </div>
                 `;
             });
         });
 
+        // تسجيل المبيعات
         document.getElementById('sellBtn').onclick = async () => {
             const grade = document.getElementById('saleGrade').value;
             const qty = parseInt(document.getElementById('saleQty').value);
@@ -446,10 +498,10 @@
             await push(ref(db, "sales"), { grade: grade, quantity: qty, price: price, total: qty * price, date: today });
             
             document.getElementById('saleQty').value = '';
-            document.getElementById('salePrice').value = '';
-            showMessage("✅ تم البيع وخصم الكمية من الفريزر");
+            showMessage("✅ تم البيع وخصم الكمية");
         };
 
+        // حساب مبيعات اليوم
         const todayStr = new Date().toISOString().split('T')[0];
         onValue(query(ref(db, "sales"), orderByChild("date"), equalTo(todayStr)), (snapshot) => {
             let dailyTotal = 0;
