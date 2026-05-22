@@ -18,6 +18,10 @@
         .stat-box { background: #ecf0f1; padding: 15px; text-align: center; border-radius: 8px; }
         .stat-num { display: block; font-size: 24px; font-weight: bold; color: #d35400; margin-top: 5px;}
         
+        /* تنسيق كروت الدفعات */
+        .batch-item { background: #f8f9fa; padding: 12px; border-radius: 8px; margin-top: 10px; border-right: 5px solid #27ae60; font-size: 14px; line-height: 1.6; }
+        .batch-days { float: left; color: #d35400; font-weight: bold; background: #fce4d6; padding: 2px 8px; border-radius: 4px; font-size: 12px; }
+
         #notificationBox {
             display: none;
             position: fixed;
@@ -34,15 +38,7 @@
             width: 80%;
             max-width: 350px;
         }
-        
-        #connectionStatus {
-            text-align: center;
-            font-size: 14px;
-            margin-top: -10px;
-            margin-bottom: 20px;
-            font-weight: bold;
-            color: #7f8c8d;
-        }
+        #connectionStatus { text-align: center; font-size: 14px; margin-top: -10px; margin-bottom: 20px; font-weight: bold; color: #7f8c8d; }
     </style>
 </head>
 <body>
@@ -60,10 +56,17 @@
     </div>
 
     <div class="card">
-        <h2>🥚 مكنة التفريخ (إدخال بيض)</h2>
+        <h2>🥚 مكنة التفريخ (إدخال بيض جديد)</h2>
         <input type="number" id="eggCount" placeholder="عدد البيض (مثال: 500)">
         <button id="addEggsBtn" class="btn-green">تسجيل وحساب تاريخ الفقس</button>
         <p id="hatchDateMsg" style="color: #27ae60; font-weight: bold; margin-top: 15px; text-align: center;"></p>
+    </div>
+
+    <div class="card">
+        <h2>📋 متابعة دفعات السمان الحالية</h2>
+        <div id="batchesList">
+            <p style="text-align: center; color: #7f8c8d; margin: 0;">لا توجد دفعات بالماكينة حالياً</p>
+        </div>
     </div>
 
     <div class="card">
@@ -82,7 +85,6 @@
     </div>
 
     <script type="module">
-        // استدعاء مكتبات Realtime Database بدلاً من Firestore
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getDatabase, ref, set, get, push, onValue, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
@@ -94,7 +96,6 @@
             setTimeout(() => { msgBox.style.display = 'none'; }, 3000);
         }
 
-        // المفاتيح مع إضافة رابط الـ Realtime Database
         const firebaseConfig = {
           apiKey: "AIzaSyCVlbWLaLqYnQVsWgFPTe4PL38bWLTLyuU",
           authDomain: "sman-6512c.firebaseapp.com",
@@ -114,18 +115,19 @@
             const totalSalesEl = document.getElementById('totalSales');
             const hatchDateMsg = document.getElementById('hatchDateMsg');
             const statusEl = document.getElementById('connectionStatus');
+            const batchesListEl = document.getElementById('batchesList');
 
             statusEl.innerText = "متصل بقاعدة البيانات ✅";
             statusEl.style.color = "#27ae60";
 
-            // 1. الماكينة
+            // 1. تسجيل بيض الماكينة وثبيت 17 يوم
             document.getElementById('addEggsBtn').addEventListener('click', async () => {
                 const qty = parseInt(document.getElementById('eggCount').value);
                 if (!qty) return showMessage("برجاء إدخال عدد البيض", true);
 
                 const today = new Date();
                 const hatchDate = new Date();
-                hatchDate.setDate(today.getDate() + 17);
+                hatchDate.setDate(today.getDate() + 17); // ميعاد الفقس بعد 17 يوم تلقائي
 
                 try {
                     const batchRef = push(ref(db, 'incubator_batches'));
@@ -135,13 +137,13 @@
                         hatchDate: hatchDate.toISOString(),
                         status: 'active'
                     });
-                    hatchDateMsg.innerText = `✅ ميعاد الفقس: ${hatchDate.toLocaleDateString('ar-EG')}`;
+                    hatchDateMsg.innerText = `✅ ميعاد الفقس المتوقع: ${hatchDate.toLocaleDateString('ar-EG')}`;
                     document.getElementById('eggCount').value = '';
-                    showMessage("تم تسجيل الدفعة بنجاح!");
-                } catch (e) { showMessage("خطأ: تأكد من تعديل الـ Rules لـ true", true); console.error(e);}
+                    showMessage("تم تسجيل دفعة البيض بنجاح!");
+                } catch (e) { showMessage("خطأ: يرجى التأكد من تفعيل الـ Rules في فايربيز لـ true", true); }
             });
 
-            // 2. الفريزر
+            // 2. تحديث الفريزر
             async function updateFreezer(amount) {
                 const freezerRef = ref(db, "inventory/freezer");
                 const snap = await get(freezerRef);
@@ -187,22 +189,59 @@
                 } catch (e) { showMessage("حدث خطأ أثناء البيع", true); }
             });
 
-            // 4. تحديث الأرقام لحظياً
+            // 4. قراءة الفريزر لحظياً وعرض البيانات
             onValue(ref(db, "inventory/freezer"), (snapshot) => {
                 freezerCountEl.innerText = snapshot.exists() ? snapshot.val().count : 0;
-            }, (error) => {
-                statusEl.innerText = "❌ خطأ في صلاحيات قاعدة البيانات (عدّل الـ Rules)";
-                statusEl.style.color = "red";
             });
 
+            // 5. حساب ومتابعة الدفعات وحساب الأيام المتبقية تلقائياً
             onValue(ref(db, "incubator_batches"), (snapshot) => {
                 let total = 0;
-                snapshot.forEach((child) => { 
-                    if(child.val().status === 'active') total += child.val().quantity; 
-                });
+                batchesListEl.innerHTML = ''; // تفريغ القائمة لإعادة البناء
+                
+                if (snapshot.exists()) {
+                    snapshot.forEach((child) => {
+                        const batch = child.val();
+                        if(batch.status === 'active') {
+                            total += batch.quantity;
+
+                            // حساب الأيام الفاضلة
+                            const today = new Date();
+                            today.setHours(0,0,0,0);
+                            const hatch = new Date(batch.hatchDate);
+                            hatch.setHours(0,0,0,0);
+                            
+                            const diffTime = hatch - today;
+                            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                            let countdownText = '';
+                            if (diffDays > 0) {
+                                countdownText = `فاضل ${diffDays} يوم ⏳`;
+                            } else if (diffDays === 0) {
+                                countdownText = `اليوم ميعاد الفقس! 🐣`;
+                            } else {
+                                countdownText = `مر على ميعاد الفقس`;
+                            }
+
+                            // إنشاء كرت مخصص لكل دفعة سمان بالماكينة
+                            const item = document.createElement('div');
+                            item.className = 'batch-item';
+                            item.innerHTML = `
+                                <span class="batch-days">${countdownText}</span>
+                                <strong>دفعة: ${batch.quantity} بيضة</strong><br>
+                                📥 دخلت الماكينة: ${new Date(batch.insertDate).toLocaleDateString('ar-EG')}<br>
+                                🐣 ميعاد الخروج (الفقس): ${new Date(batch.hatchDate).toLocaleDateString('ar-EG')}
+                            `;
+                            batchesListEl.appendChild(item);
+                        }
+                    });
+                } else {
+                    batchesListEl.innerHTML = '<p style="text-align: center; color: #7f8c8d; margin: 0;">لا توجد دفعات بالماكينة حالياً</p>';
+                }
                 totalEggsEl.innerText = total;
             });
 
+            // 6. حساب المبيعات اليومية
             const todayStr = new Date().toISOString().split('T')[0];
             const salesQuery = query(ref(db, "sales"), orderByChild("date"), equalTo(todayStr));
             onValue(salesQuery, (snapshot) => {
@@ -212,7 +251,7 @@
             });
 
         } catch (error) {
-            document.getElementById('connectionStatus').innerText = "❌ فشل الاتصال بقاعدة البيانات";
+            document.getElementById('connectionStatus').innerText = "❌ فشل الاتصال بالسيرفر";
         }
     </script>
 </body>
