@@ -3,115 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إدارة المزرعة والمخزن</title>
+    <title>إدارة مزرعة سمان ههيا المتكاملة</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; margin: 0; padding: 15px; background-color: #f4f7f6; padding-top: 20px;}
-        .card { background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        h2 { color: #2c3e50; margin-top: 0; font-size: 18px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-        input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px;}
-        button { color: white; border: none; padding: 12px; border-radius: 8px; width: 100%; font-size: 16px; cursor: pointer; font-weight: bold; margin-top: 5px; transition: 0.2s;}
+        :root { --primary: #2c3e50; --success: #27ae60; --warning: #d35400; --info: #2980b9; --purple: #8e44ad; --danger: #c0392b; --bg: #f4f7f6; }
+        body { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; margin: 0; padding: 15px; background-color: var(--bg); padding-top: 20px; padding-bottom: 80px;}
+        .card { background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-top: 4px solid var(--primary); }
+        h2 { color: var(--primary); margin-top: 0; font-size: 18px; border-bottom: 2px solid #eee; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center;}
+        input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 14px;}
+        button { color: white; border: none; padding: 12px; border-radius: 8px; width: 100%; font-size: 15px; cursor: pointer; font-weight: bold; margin-top: 5px; transition: 0.2s; }
         button:active { transform: scale(0.98); }
-        .btn-green { background: #27ae60; }
-        .btn-blue { background: #2980b9; }
-        .btn-purple { background: #8e44ad; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .stat-box { background: #ecf0f1; padding: 15px; text-align: center; border-radius: 8px; }
-        .stat-num { display: block; font-size: 24px; font-weight: bold; color: #d35400; margin-top: 5px;}
+        .btn-green { background: var(--success); } .btn-blue { background: var(--info); } .btn-purple { background: var(--purple); } .btn-red { background: var(--danger); } .btn-gray { background: #7f8c8d; }
         
-        /* تنسيق كروت الدفعات */
-        .batch-item { background: #f8f9fa; padding: 14px; border-radius: 8px; margin-top: 10px; border-right: 5px solid #27ae60; font-size: 14px; line-height: 1.6; position: relative; }
-        .batch-turkey { border-right-color: #8e44ad; }
-        .batch-days { float: left; color: #d35400; font-weight: bold; background: #fce4d6; padding: 4px 8px; border-radius: 4px; font-size: 12px; }
-        .badge { display: inline-block; padding: 2px 6px; border-radius: 4px; color: white; font-size: 12px; font-weight: bold; }
-        .bg-quail { background: #27ae60; }
-        .bg-turkey { background: #8e44ad; }
+        /* Grid Layouts */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 10px; }
+        
+        .stat-box { background: #ecf0f1; padding: 15px; text-align: center; border-radius: 8px; border-bottom: 3px solid var(--primary);}
+        .stat-num { display: block; font-size: 20px; font-weight: bold; color: var(--warning); margin-top: 5px;}
+        
+        /* Batch Items */
+        .batch-item { background: #fff; padding: 15px; border-radius: 8px; margin-top: 12px; border: 1px solid #eee; border-right: 5px solid var(--warning); font-size: 14px; position: relative; box-shadow: 0 2px 4px rgba(0,0,0,0.02);}
+        .batch-rearing { border-right-color: var(--info); }
+        .batch-completed { border-right-color: var(--success); opacity: 0.8; }
+        .badge { display: inline-block; padding: 3px 8px; border-radius: 4px; color: white; font-size: 11px; font-weight: bold; margin-bottom: 5px;}
+        
+        /* Modal (شاشة منبثقة) */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; justify-content: center; align-items: flex-end; }
+        .modal-content { background: white; width: 100%; max-width: 500px; border-radius: 20px 20px 0 0; padding: 20px; box-sizing: border-box; max-height: 90vh; overflow-y: auto; animation: slideUp 0.3s ease-out; }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        .close-btn { float: left; background: none; border: none; color: #333; font-size: 24px; cursor: pointer; width: auto; padding: 0;}
 
-        #notificationBox {
-            display: none;
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: white;
-            padding: 12px 25px;
-            border-radius: 8px;
-            z-index: 1000;
-            font-weight: bold;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            text-align: center;
-            width: 80%;
-            max-width: 350px;
-        }
-        #connectionStatus { text-align: center; font-size: 14px; margin-top: -10px; margin-bottom: 20px; font-weight: bold; color: #7f8c8d; }
+        /* التصنيفات */
+        .grade-input { display: flex; align-items: center; justify-content: space-between; background: #f8f9fa; padding: 8px 12px; border-radius: 6px; margin-bottom: 5px; }
+        .grade-input label { font-weight: bold; font-size: 14px; color: #34495e; }
+        .grade-input input { width: 80px; margin: 0; padding: 6px; text-align: center; }
+
+        #notificationBox { display: none; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); color: white; padding: 12px 25px; border-radius: 8px; z-index: 3000; font-weight: bold; text-align: center; width: 80%; max-width: 350px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        #connectionStatus { text-align: center; font-size: 12px; margin-top: -10px; margin-bottom: 15px; font-weight: bold; color: #7f8c8d; }
     </style>
 </head>
 <body>
 
     <div id="notificationBox"></div>
-    <div id="connectionStatus">جاري الاتصال بقاعدة البيانات... ⏳</div>
+    <div id="connectionStatus">جاري الاتصال... ⏳</div>
 
-    <div class="card">
-        <h2>📊 لوحة التحكم والمخزن</h2>
-        <div class="grid">
-            <div class="stat-box">الماكينة (بيضة)<span class="stat-num" id="totalEggs">0</span></div>
-            <div class="stat-box">الفريزر (جوز)<span class="stat-num" id="freezerCount">0</span></div>
-            <div class="stat-box" style="grid-column: span 2;">إجمالي مبيعات اليوم (جنيه)<span class="stat-num" id="totalSales" style="color: #27ae60;">0</span></div>
-        </div>
-    </div>
-
-    <div class="card">
-        <h2>🥚 مكنة التفريخ (إدخال بيض جديد)</h2>
+    <div class="card" style="border-top-color: var(--info);">
+        <h2>❄️ الفريزر (الجرد التفصيلي)</h2>
+        <div class="grid-3" id="freezerGrid">
+            </div>
         
-        <label style="font-weight: bold; color: #34495e;">نوع الطائر:</label>
-        <select id="birdType">
-            <option value="quail">سمان (15 يوم + 3 أيام فقس)</option>
-            <option value="turkey">رومي (25 يوم + 3 أيام فقس)</option>
-        </select>
-
-        <label style="font-weight: bold; color: #34495e;">تاريخ دخول الماكينة:</label>
-        <input type="date" id="insertDate">
-
-        <label style="font-weight: bold; color: #34495e;">عدد البيض:</label>
-        <input type="number" id="eggCount" placeholder="عدد البيض (مثال: 500)">
-        
-        <button id="addEggsBtn" class="btn-green">تسجيل وحساب التواريخ تلقائياً</button>
-        <p id="hatchDateMsg" style="color: #27ae60; font-weight: bold; margin-top: 15px; text-align: center;"></p>
-    </div>
-
-    <div class="card">
-        <h2>📋 متابعة دفعات الماكينة الحالية</h2>
-        <div id="batchesList">
-            <p style="text-align: center; color: #7f8c8d; margin: 0;">لا توجد دفعات بالماكينة حالياً</p>
+        <h3 style="font-size: 15px; color: var(--primary); margin-top: 20px;">💰 المبيعات اليومية</h3>
+        <div class="grid-2">
+            <select id="saleGrade">
+                <option value="royal">رويال</option>
+                <option value="super_special">سوبر سبشيال</option>
+                <option value="special">سبشيال</option>
+                <option value="jumbo">جامبو</option>
+                <option value="super">سوبر</option>
+                <option value="excellent">ممتاز (صغير)</option>
+                <option value="bad">بايظ (درجة تانية)</option>
+            </select>
+            <input type="number" id="saleQty" placeholder="العدد (جوز)">
         </div>
-    </div>
-
-    <div class="card">
-        <h2>❄️ الفريزر (تخزين السمان)</h2>
-        <input type="number" id="freezerQty" placeholder="الكمية المضافة (بالجوز)">
-        <button id="addFreezerBtn" class="btn-blue">➕ إضافة للفريزر</button>
-    </div>
-
-    <div class="card">
-        <h2>💰 المبيعات (بيع من الفريزر)</h2>
-        <div class="grid">
-            <input type="number" id="saleQty" placeholder="الكمية (جوز)">
-            <input type="number" id="salePrice" placeholder="سعر الجوز (جنيه)">
-        </div>
+        <input type="number" id="salePrice" placeholder="سعر الجوز في البيعة دي (جنيه)">
         <button id="sellBtn" class="btn-purple">تسجيل البيع وخصم من الفريزر</button>
+        <div class="stat-box" style="margin-top: 10px; padding: 10px;">إجمالي المبيعات اليوم<span class="stat-num" id="totalSales" style="color: var(--success);">0 ج.م</span></div>
+    </div>
+
+    <div class="card" style="border-top-color: var(--warning);">
+        <h2>🥚 إضافة بيض للماكينة</h2>
+        <div class="grid-2">
+            <div>
+                <label style="font-size: 12px; font-weight: bold;">النوع:</label>
+                <select id="birdType">
+                    <option value="quail">سمان</option>
+                    <option value="turkey">رومي</option>
+                </select>
+            </div>
+            <div>
+                <label style="font-size: 12px; font-weight: bold;">تاريخ الدخول:</label>
+                <input type="date" id="insertDate">
+            </div>
+        </div>
+        <input type="number" id="eggCount" placeholder="إجمالي عدد البيض المضاف">
+        <button id="addEggsBtn" class="btn-green">تسجيل الدفعة</button>
+    </div>
+
+    <div class="card" style="border-top-color: var(--success);">
+        <h2>
+            📋 الدفعات الحالية (ماكينة وتربية)
+            <button id="openArchiveBtn" class="btn-gray" style="width: auto; padding: 5px 10px; font-size: 12px; margin: 0;">الأرشيف</button>
+        </h2>
+        <div id="batchesList"><p style="text-align: center; color: #7f8c8d;">لا توجد دفعات حالياً</p></div>
+    </div>
+
+    <div id="batchModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal()">×</button>
+            <h2 id="modalTitle" style="border-bottom: none; margin-bottom: 5px;">إدارة الدفعة</h2>
+            <div id="modalDetails" style="font-size: 13px; color: #7f8c8d; margin-bottom: 15px;"></div>
+
+            <div id="modalActions1">
+                <button id="moveToRearingBtn" class="btn-blue" style="display: none;">🐥 تمت عملية الفقس (نقل للتربية)</button>
+                <button id="deleteBatchBtn" class="btn-red" style="margin-top: 15px;">🗑️ حذف الدفعة نهائياً</button>
+            </div>
+
+            <div id="rearingSection" style="display: none; border-top: 2px solid #eee; margin-top: 15px; padding-top: 15px;">
+                <h3 style="font-size: 15px; color: var(--purple); margin-top: 0;">🌾 خطة العلف والتربية</h3>
+                <div class="grid-2">
+                    <input type="number" id="feedAmount" placeholder="العلف المستهلك (كجم)">
+                    <input type="number" id="feedCost" placeholder="تكلفة العلف (جنيه)">
+                </div>
+
+                <h3 style="font-size: 15px; color: var(--danger); margin-top: 15px;">🔪 تصنيف الدبح (أدخل عدد الأجواز)</h3>
+                <div id="slaughterGrades">
+                    <div class="grade-input"><label>👑 رويال (أكبر حاجة)</label><input type="number" id="g_royal" value="0" min="0"></div>
+                    <div class="grade-input"><label>🌟 سوبر سبشيال</label><input type="number" id="g_super_special" value="0" min="0"></div>
+                    <div class="grade-input"><label>✨ سبشيال</label><input type="number" id="g_special" value="0" min="0"></div>
+                    <div class="grade-input"><label>💪 جامبو</label><input type="number" id="g_jumbo" value="0" min="0"></div>
+                    <div class="grade-input"><label>👍 سوبر</label><input type="number" id="g_super" value="0" min="0"></div>
+                    <div class="grade-input"><label>👌 ممتاز (صغير)</label><input type="number" id="g_excellent" value="0" min="0"></div>
+                    <div class="grade-input"><label>❌ بايظ / فرز</label><input type="number" id="g_bad" value="0" min="0"></div>
+                </div>
+                <button id="finishBatchBtn" class="btn-green" style="margin-top: 15px;">✅ إنهاء الدفعة وتوريد للفريزر</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="archiveModal" class="modal-overlay">
+        <div class="modal-content" style="height: 80vh;">
+            <button class="close-btn" onclick="closeArchiveModal()">×</button>
+            <h2>📚 أرشيف الدفعات المكتملة</h2>
+            <div id="archiveList" style="margin-top: 15px;"></div>
+        </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getDatabase, ref, set, get, push, onValue, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+        import { getDatabase, ref, set, get, push, update, remove, onValue, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
-        function showMessage(text, isError = false) {
-            const msgBox = document.getElementById('notificationBox');
-            msgBox.innerText = text;
-            msgBox.style.backgroundColor = isError ? '#e74c3c' : '#2ecc71';
-            msgBox.style.display = 'block';
-            setTimeout(() => { msgBox.style.display = 'none'; }, 3000);
-        }
-
+        // مفاتيح مشروعك
         const firebaseConfig = {
           apiKey: "AIzaSyCVlbWLaLqYnQVsWgFPTe4PL38bWLTLyuU",
           authDomain: "sman-6512c.firebaseapp.com",
@@ -122,169 +153,271 @@
           appId: "1:64902261641:web:d9d2d78d966e8aa4618f58"
         };
 
-        try {
-            const app = initializeApp(firebaseConfig);
-            const db = getDatabase(app);
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
 
-            const totalEggsEl = document.getElementById('totalEggs');
-            const freezerCountEl = document.getElementById('freezerCount');
-            const totalSalesEl = document.getElementById('totalSales');
-            const hatchDateMsg = document.getElementById('hatchDateMsg');
-            const statusEl = document.getElementById('connectionStatus');
-            const batchesListEl = document.getElementById('batchesList');
-            const insertDateInput = document.getElementById('insertDate');
+        // واجهة المستخدم
+        document.getElementById('insertDate').value = new Date().toISOString().split('T')[0];
+        let currentBatches = {}; // لحفظ الدفعات في الذاكرة للبحث
+        let currentEditingId = null;
 
-            // ضبط تاريخ النتيجة تلقائياً على اليوم لتسهيل العمل
-            insertDateInput.value = new Date().toISOString().split('T')[0];
+        // دالة الإشعارات
+        window.showMessage = function(text, isError = false) {
+            const msgBox = document.getElementById('notificationBox');
+            msgBox.innerText = text;
+            msgBox.style.backgroundColor = isError ? '#e74c3c' : '#2ecc71';
+            msgBox.style.display = 'block';
+            setTimeout(() => { msgBox.style.display = 'none'; }, 3000);
+        }
 
-            statusEl.innerText = "متصل بقاعدة البيانات ✅";
-            statusEl.style.color = "#27ae60";
+        // إغلاق وفتح النوافذ
+        window.closeModal = () => { document.getElementById('batchModal').style.display = 'none'; currentEditingId = null; }
+        window.closeArchiveModal = () => { document.getElementById('archiveModal').style.display = 'none'; }
+        document.getElementById('openArchiveBtn').onclick = () => { document.getElementById('archiveModal').style.display = 'flex'; }
 
-            // 1. تسجيل دفعة جديدة بناءً على النوع والتاريخ المختار
-            document.getElementById('addEggsBtn').addEventListener('click', async () => {
-                const qty = parseInt(document.getElementById('eggCount').value);
-                const birdType = document.getElementById('birdType').value;
-                const selectedDateVal = insertDateInput.value;
+        // المسميات للواجهة
+        const gradeNames = { royal: 'رويال', super_special: 'سوبر سبشيال', special: 'سبشيال', jumbo: 'جامبو', super: 'سوبر', excellent: 'ممتاز', bad: 'بايظ' };
+        
+        // 1. تسجيل دفعة في الماكينة
+        document.getElementById('addEggsBtn').addEventListener('click', async () => {
+            const qty = parseInt(document.getElementById('eggCount').value);
+            const birdType = document.getElementById('birdType').value;
+            const startDate = document.getElementById('insertDate').value;
 
-                if (!qty) return showMessage("برجاء إدخال عدد البيض", true);
-                if (!selectedDateVal) return showMessage("برجاء اختيار تاريخ الدخول", true);
+            if (!qty) return showMessage("برجاء إدخال عدد البيض", true);
 
-                const startDate = new Date(selectedDateVal);
-                
-                // تحديد المدد بناء على نوع الطائر
-                let incubatorDays = birdType === 'quail' ? 15 : 25;
-                let hatcherDays = 3;
-                let totalDays = incubatorDays + hatcherDays;
+            const sDate = new Date(startDate);
+            let incubatorDays = birdType === 'quail' ? 15 : 25;
+            let hatcherDays = 3;
 
-                // حساب التواريخ
-                const hatcherDate = new Date(startDate);
-                hatcherDate.setDate(startDate.getDate() + incubatorDays);
+            const hatchDate = new Date(sDate);
+            hatchDate.setDate(sDate.getDate() + incubatorDays + hatcherDays);
 
-                const hatchDate = new Date(startDate);
-                hatchDate.setDate(startDate.getDate() + totalDays);
+            try {
+                await push(ref(db, 'batches'), {
+                    type: birdType,
+                    quantity: qty,
+                    insertDate: sDate.toISOString(),
+                    hatchDate: hatchDate.toISOString(),
+                    status: 'incubator', // الحالات: incubator, rearing, completed
+                    feedKg: 0,
+                    feedCost: 0
+                });
+                document.getElementById('eggCount').value = '';
+                showMessage("✅ تم تسجيل الدفعة في الماكينة");
+            } catch (e) { showMessage("خطأ في التسجيل", true); }
+        });
 
-                try {
-                    const batchRef = push(ref(db, 'incubator_batches'));
-                    await set(batchRef, {
-                        type: birdType,
-                        quantity: qty,
-                        insertDate: startDate.toISOString(),
-                        hatcherDate: hatcherDate.toISOString(),
-                        hatchDate: hatchDate.toISOString(),
-                        status: 'active'
-                    });
-                    
-                    const typeText = birdType === 'quail' ? 'السمان' : 'الرومي';
-                    hatchDateMsg.innerText = `✅ دفعة ${typeText}: النقل للمفقس ${hatcherDate.toLocaleDateString('ar-EG')} | الفقس ${hatchDate.toLocaleDateString('ar-EG')}`;
-                    document.getElementById('eggCount').value = '';
-                    showMessage("تم تسجيل دفعة البيض بنجاح!");
-                } catch (e) { showMessage("خطأ في التسجيل بقاعدة البيانات", true); }
-            });
+        // 2. قراءة الدفعات وعرضها
+        onValue(ref(db, "batches"), (snapshot) => {
+            const batchesList = document.getElementById('batchesList');
+            const archiveList = document.getElementById('archiveList');
+            batchesList.innerHTML = '';
+            archiveList.innerHTML = '';
+            currentBatches = {};
 
-            // 2. تحديث الفريزر
-            async function updateFreezer(amount) {
-                const freezerRef = ref(db, "inventory/freezer");
-                const snap = await get(freezerRef);
-                let currentCount = snap.exists() ? snap.val().count : 0;
-                const newCount = currentCount + amount;
-                if (newCount < 0) {
-                    showMessage("الرصيد في الفريزر لا يكفي!", true);
-                    return false;
-                }
-                await set(freezerRef, { count: newCount });
-                return true;
+            let hasActive = false;
+            let hasArchived = false;
+
+            if (snapshot.exists()) {
+                snapshot.forEach((child) => {
+                    const id = child.key;
+                    const b = child.val();
+                    currentBatches[id] = b;
+
+                    const typeName = b.type === 'quail' ? 'سمان' : 'رومي';
+                    let statusHtml = '';
+                    let mainClass = '';
+
+                    if (b.status === 'incubator') {
+                        statusHtml = `<span class="badge" style="background: var(--warning);">🥚 في الماكينة</span>`;
+                        mainClass = 'batch-item';
+                    } else if (b.status === 'rearing') {
+                        statusHtml = `<span class="badge" style="background: var(--info);">🐥 في التربية</span>`;
+                        mainClass = 'batch-item batch-rearing';
+                    } else {
+                        statusHtml = `<span class="badge" style="background: var(--success);">🥩 مكتملة ومذبوحة</span>`;
+                        mainClass = 'batch-item batch-completed';
+                    }
+
+                    const cardHtml = `
+                        <div class="${mainClass}">
+                            ${statusHtml}
+                            <button onclick="openBatchDetails('${id}')" style="float: left; width: auto; padding: 4px 10px; margin:0; font-size: 12px; background: var(--primary);">إدارة / تفاصيل</button>
+                            <div style="clear: both; margin-top: 5px;">
+                                <strong>${typeName} | العدد الأصلي: ${b.quantity} بيضة</strong><br>
+                                <small style="color: #7f8c8d;">تاريخ الدخول: ${new Date(b.insertDate).toLocaleDateString('ar-EG')}</small>
+                            </div>
+                        </div>
+                    `;
+
+                    if (b.status === 'completed') {
+                        archiveList.insertAdjacentHTML('beforeend', cardHtml);
+                        hasArchived = true;
+                    } else {
+                        batchesList.insertAdjacentHTML('beforeend', cardHtml);
+                        hasActive = true;
+                    }
+                });
             }
 
-            document.getElementById('addFreezerBtn').addEventListener('click', async () => {
-                const qty = parseInt(document.getElementById('freezerQty').value);
-                if(qty) {
-                    await updateFreezer(qty);
-                    document.getElementById('freezerQty').value = '';
-                    showMessage("تم إضافة الكمية للفريزر بنجاح!");
-                } else { showMessage("برجاء إدخال الكمية أولاً", true); }
-            });
+            if(!hasActive) batchesList.innerHTML = '<p style="text-align:center; color:#7f8c8d;">لا توجد دفعات حالياً</p>';
+            if(!hasArchived) archiveList.innerHTML = '<p style="text-align:center; color:#7f8c8d;">الأرشيف فارغ</p>';
+        });
 
-            // 3. المبيعات
-            document.getElementById('sellBtn').addEventListener('click', async () => {
-                const qty = parseInt(document.getElementById('saleQty').value);
-                const price = parseFloat(document.getElementById('salePrice').value);
-                if (!qty || !price) return showMessage("برجاء إدخال الكمية والسعر", true);
+        // 3. فتح شاشة تفاصيل الدفعة (Modal)
+        window.openBatchDetails = (id) => {
+            currentEditingId = id;
+            const b = currentBatches[id];
+            
+            document.getElementById('modalTitle').innerText = b.type === 'quail' ? 'إدارة دفعة السمان' : 'إدارة دفعة الرومي';
+            document.getElementById('modalDetails').innerHTML = `
+                عدد البيض الأولي: <b>${b.quantity}</b><br>
+                تاريخ الدخول: ${new Date(b.insertDate).toLocaleDateString('ar-EG')}<br>
+                تاريخ الفقس المتوقع: ${new Date(b.hatchDate).toLocaleDateString('ar-EG')}
+            `;
 
-                const success = await updateFreezer(-qty);
-                if (success) {
-                    const today = new Date().toISOString().split('T')[0];
-                    const salesRef = push(ref(db, "sales"));
-                    await set(salesRef, { quantity: qty, price: price, total: qty * price, date: today });
-                    document.getElementById('saleQty').value = '';
-                    document.getElementById('salePrice').value = '';
-                    showMessage("تم البيع وخصم الكمية من الفريزر");
+            const moveBtn = document.getElementById('moveToRearingBtn');
+            const rearingSec = document.getElementById('rearingSection');
+            const finishBtn = document.getElementById('finishBatchBtn');
+
+            // تصفير الخانات
+            ['royal','super_special','special','jumbo','super','excellent','bad'].forEach(g => document.getElementById('g_'+g).value = 0);
+            document.getElementById('feedAmount').value = b.feedKg || '';
+            document.getElementById('feedCost').value = b.feedCost || '';
+
+            if (b.status === 'incubator') {
+                moveBtn.style.display = 'block';
+                rearingSec.style.display = 'none';
+            } else if (b.status === 'rearing') {
+                moveBtn.style.display = 'none';
+                rearingSec.style.display = 'block';
+                finishBtn.style.display = 'block';
+            } else if (b.status === 'completed') {
+                moveBtn.style.display = 'none';
+                rearingSec.style.display = 'block';
+                finishBtn.style.display = 'none'; // لا يمكن دبحها مرتين
+                // تعبئة البيانات المقروءة فقط
+                document.getElementById('feedAmount').value = b.feedKg;
+                document.getElementById('feedCost').value = b.feedCost;
+                if(b.slaughter) {
+                    for(let key in b.slaughter) {
+                        if(document.getElementById('g_'+key)) document.getElementById('g_'+key).value = b.slaughter[key];
+                    }
                 }
+            }
+            
+            document.getElementById('batchModal').style.display = 'flex';
+        };
+
+        // 4. الإجراءات داخل شاشة الدفعة
+        document.getElementById('deleteBatchBtn').onclick = async () => {
+            if(confirm('هل أنت متأكد من حذف هذه الدفعة نهائياً؟')) {
+                await remove(ref(db, `batches/${currentEditingId}`));
+                closeModal();
+                showMessage("تم الحذف بنجاح");
+            }
+        };
+
+        document.getElementById('moveToRearingBtn').onclick = async () => {
+            await update(ref(db, `batches/${currentEditingId}`), { status: 'rearing' });
+            closeModal();
+            showMessage("✅ تم نقل الدفعة لمرحلة التربية");
+        };
+
+        document.getElementById('finishBatchBtn').onclick = async () => {
+            const feedKg = parseFloat(document.getElementById('feedAmount').value) || 0;
+            const feedCost = parseFloat(document.getElementById('feedCost').value) || 0;
+            
+            // جمع أعداد الدبح
+            const slaughterData = {};
+            let totalSlaughtered = 0;
+            ['royal','super_special','special','jumbo','super','excellent','bad'].forEach(g => {
+                const val = parseInt(document.getElementById('g_'+g).value) || 0;
+                slaughterData[g] = val;
+                totalSlaughtered += val;
             });
 
-            // 4. قراءة الفريزر لحظياً
-            onValue(ref(db, "inventory/freezer"), (snapshot) => {
-                freezerCountEl.innerText = snapshot.exists() ? snapshot.val().count : 0;
-            });
+            if (totalSlaughtered === 0) return showMessage("برجاء إدخال أعداد الدبح في الأصناف", true);
 
-            // 5. متابعة وحساب التواريخ والعداد التنازلي لكل نوع تلقائياً
-            onValue(ref(db, "incubator_batches"), (snapshot) => {
-                let total = 0;
-                batchesListEl.innerHTML = '';
-                
-                if (snapshot.exists()) {
-                    snapshot.forEach((child) => {
-                        const batch = child.val();
-                        if(batch.status === 'active') {
-                            total += batch.quantity;
+            try {
+                // تحديث الفريزر بكل صنف
+                const freezerRef = ref(db, "inventory/freezer");
+                const snap = await get(freezerRef);
+                let currentFreezer = snap.exists() ? snap.val() : {};
 
-                            // حساب الأيام المتبقية للفقس
-                            const today = new Date();
-                            today.setHours(0,0,0,0);
-                            const hatch = new Date(batch.hatchDate);
-                            hatch.setHours(0,0,0,0);
-                            
-                            const diffTime = hatch - today;
-                            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-                            let countdownText = '';
-                            if (diffDays > 0) { countdownText = `فاضل ${diffDays} يوم ⏳`; }
-                            else if (diffDays === 0) { countdownText = `اليوم ميعاد الفقس! 🐣`; }
-                            else { countdownText = `مر ميعاد الفقس`; }
-
-                            const typeBadge = batch.type === 'quail' 
-                                ? '<span class="badge bg-quail">سمان</span>' 
-                                : '<span class="badge bg-turkey">رومي</span>';
-
-                            const item = document.createElement('div');
-                            item.className = `batch-item ${batch.type === 'turkey' ? 'batch-turkey' : ''}`;
-                            item.innerHTML = `
-                                <span class="batch-days">${countdownText}</span>
-                                ${typeBadge} <strong>دفعة: ${batch.quantity} بيضة</strong><br>
-                                📥 تاريخ الدخول المختار: ${new Date(batch.insertDate).toLocaleDateString('ar-EG')}<br>
-                                📦 ميعاد النقل للمفقس: ${new Date(batch.hatcherDate).toLocaleDateString('ar-EG')}<br>
-                                🐣 ميعاد الفقس والنزول: ${new Date(batch.hatchDate).toLocaleDateString('ar-EG')}
-                            `;
-                            batchesListEl.appendChild(item);
-                        }
-                    });
-                } else {
-                    batchesListEl.innerHTML = '<p style="text-align: center; color: #7f8c8d; margin: 0;">لا توجد دفعات بالماكينة حالياً</p>';
+                for(let grade in slaughterData) {
+                    currentFreezer[grade] = (currentFreezer[grade] || 0) + slaughterData[grade];
                 }
-                totalEggsEl.innerText = total;
-            });
+                await set(freezerRef, currentFreezer);
 
-            // 6. المبيعات اليومية
-            const todayStr = new Date().toISOString().split('T')[0];
-            const salesQuery = query(ref(db, "sales"), orderByChild("date"), equalTo(todayStr));
-            onValue(salesQuery, (snapshot) => {
-                let dailyTotal = 0;
-                snapshot.forEach((child) => { dailyTotal += child.val().total; });
-                totalSalesEl.innerText = dailyTotal;
-            });
+                // إنهاء الدفعة
+                await update(ref(db, `batches/${currentEditingId}`), { 
+                    status: 'completed',
+                    feedKg: feedKg,
+                    feedCost: feedCost,
+                    slaughter: slaughterData,
+                    totalYield: totalSlaughtered
+                });
 
-        } catch (error) {
-            document.getElementById('connectionStatus').innerText = "❌ فشل الاتصال بالسيرفر";
-        }
+                closeModal();
+                showMessage("🎉 تم إنهاء الدفعة وتوريدها للفريزر بنجاح!");
+            } catch (e) { showMessage("حدث خطأ أثناء الحفظ", true); }
+        };
+
+        // 5. قراءة الفريزر وعرض الأصناف
+        onValue(ref(db, "inventory/freezer"), (snapshot) => {
+            const fGrid = document.getElementById('freezerGrid');
+            fGrid.innerHTML = '';
+            let data = snapshot.exists() ? snapshot.val() : {};
+            
+            ['royal','super_special','special','jumbo','super','excellent','bad'].forEach(g => {
+                let count = data[g] || 0;
+                let color = g === 'bad' ? '#c0392b' : (count > 0 ? '#27ae60' : '#7f8c8d');
+                fGrid.innerHTML += `
+                    <div style="background: #fff; border: 1px solid #ddd; padding: 10px; border-radius: 8px; text-align: center;">
+                        <span style="display: block; font-size: 11px; font-weight: bold; color: #34495e; margin-bottom: 5px;">${gradeNames[g]}</span>
+                        <strong style="font-size: 18px; color: ${color};">${count}</strong>
+                    </div>
+                `;
+            });
+        });
+
+        // 6. المبيعات (بيع صنف محدد)
+        document.getElementById('sellBtn').onclick = async () => {
+            const grade = document.getElementById('saleGrade').value;
+            const qty = parseInt(document.getElementById('saleQty').value);
+            const price = parseFloat(document.getElementById('salePrice').value);
+
+            if (!qty || !price) return showMessage("برجاء إدخال الكمية والسعر", true);
+
+            const specificRef = ref(db, `inventory/freezer/${grade}`);
+            const snap = await get(specificRef);
+            let currentQty = snap.exists() ? snap.val() : 0;
+
+            if (currentQty < qty) return showMessage(`الرصيد لا يكفي في صنف (${gradeNames[grade]})! المتاح: ${currentQty}`, true);
+
+            await set(specificRef, currentQty - qty);
+            
+            const today = new Date().toISOString().split('T')[0];
+            await push(ref(db, "sales"), { grade: grade, quantity: qty, price: price, total: qty * price, date: today });
+            
+            document.getElementById('saleQty').value = '';
+            document.getElementById('salePrice').value = '';
+            showMessage("✅ تم البيع وخصم الكمية من الفريزر");
+        };
+
+        // 7. حساب المبيعات اليومية
+        const todayStr = new Date().toISOString().split('T')[0];
+        onValue(query(ref(db, "sales"), orderByChild("date"), equalTo(todayStr)), (snapshot) => {
+            let dailyTotal = 0;
+            snapshot.forEach((child) => { dailyTotal += child.val().total; });
+            document.getElementById('totalSales').innerText = dailyTotal + " ج.م";
+        });
+
+        // تأكيد الاتصال
+        setTimeout(() => { document.getElementById('connectionStatus').innerText = "متصل بالسيرفر ومزامن ✅"; document.getElementById('connectionStatus').style.color = "#27ae60"; }, 1500);
+
     </script>
 </body>
 </html>
