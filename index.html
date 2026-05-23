@@ -6,17 +6,40 @@
     <title>نظام إدارة سمان ههيا - ERP الشامل</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { 
-            --primary: #192a56; --secondary: #273c75; --success: #44bd32; --warning: #fbc531; 
-            --info: #0097e6; --purple: #8c7ae6; --danger: #e84118; 
-            --bg: #f5f6fa; --card-bg: #ffffff; --text-main: #2f3640; --text-muted: #718093;
+        :root {
+            --primary: #192a56;
+            --secondary: #273c75;
+            --success: #44bd32;
+            --warning: #fbc531;
+            --info: #0097e6;
+            --purple: #8c7ae6;
+            --danger: #e84118;
+            --bg: #f5f6fa;
+            --card-bg: #ffffff;
+            --text-main: #2f3640;
+            --text-muted: #718093;
             --border: #dcdde1;
         }
 
-        body { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; margin: 0; padding: 0; background-color: var(--bg); color: var(--text-main); padding-bottom: 90px; font-size: 16px; }
-        
+        body {
+            font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+            margin: 0; padding: 0;
+            background-color: var(--bg);
+            color: var(--text-main);
+            padding-bottom: 90px;
+            font-size: 16px;
+        }
+
         /* Navbar Bottom */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--card-bg); display: flex; justify-content: space-around; padding: 12px 5px 25px 5px; box-shadow: 0 -4px 15px rgba(0,0,0,0.05); z-index: 1000; border-top: 1px solid var(--border); }
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: var(--card-bg);
+            display: flex; justify-content: space-around;
+            padding: 12px 5px 25px 5px;
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
+            z-index: 1000;
+            border-top: 1px solid var(--border);
+        }
         .nav-item { text-align: center; color: var(--text-muted); cursor: pointer; flex: 1; transition: 0.3s; }
         .nav-item i { font-size: 22px; margin-bottom: 5px; display: block; }
         .nav-item span { font-size: 12px; font-weight: bold; }
@@ -26,183 +49,202 @@
         .page-view { display: none; padding: 15px; animation: fadeIn 0.3s ease; }
         .page-view.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-
-        .header-title { background: var(--primary); color: white; padding: 25px 20px 20px; margin: -15px -15px 20px -15px; border-radius: 0 0 25px 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); font-size: 22px; font-weight: 900; display: flex; justify-content: space-between; align-items: center;}
         
+        .header-title {
+            background: var(--primary); color: white;
+            padding: 25px 20px 20px; margin: -15px -15px 20px -15px;
+            border-radius: 0 0 25px 25px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            font-size: 22px; font-weight: 900;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
         /* Cards & UI Elements */
         .card { background: var(--card-bg); padding: 20px; border-radius: 16px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.02); }
         .card-header { font-size: 18px; color: var(--primary); font-weight: bold; margin-bottom: 15px; border-bottom: 2px solid var(--bg); padding-bottom: 10px; display: flex; justify-content: space-between;}
-        
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .stat-box { background: var(--bg); padding: 15px; text-align: center; border-radius: 12px; font-size: 13px; font-weight: bold; color: var(--text-muted); }
-        .stat-box .num { display: block; font-size: 22px; font-weight: 900; color: var(--primary); margin-top: 5px; }
+        .stat-box { background: var(--bg); padding: 15px; text-align: center; border-radius: 12px; font-size: 14px; font-weight: bold; color: var(--text-muted); }
+        .stat-box .num { display: block; font-size: 24px; font-weight: 900; color: var(--primary); margin-top: 5px; }
 
-        /* Financial Ledger Colors */
+        /* Ledger & Transactions */
         .text-success { color: var(--success) !important; }
         .text-danger { color: var(--danger) !important; }
-        
         .transaction-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid var(--bg); }
-        .transaction-item:last-child { border-bottom: none; }
         
-        .batch-card { background: var(--card-bg); border: 1px solid var(--border); padding: 15px; border-radius: 12px; margin-bottom: 15px; position: relative; }
-        .badge { padding: 5px 10px; border-radius: 8px; font-size: 12px; font-weight: bold; color: white; display: inline-block; }
+        /* Batch Cards with stage colors */
+        .batch-card { background: var(--card-bg); border: 1px solid var(--border); padding: 15px; border-radius: 12px; margin-bottom: 15px; position: relative; border-right: 5px solid var(--border); }
+        .batch-card.stage-incubator { border-right-color: var(--info); }
+        .batch-card.stage-hatcher { border-right-color: var(--purple); }
+        .batch-card.stage-rearing { border-right-color: var(--warning); }
+        .batch-card.stage-slaughter { border-right-color: var(--danger); }
+        .batch-card.stage-completed { border-right-color: var(--success); }
         
-        /* Forms & Inputs inside Modals */
-        label { font-weight: bold; font-size: 14px; color: var(--text-muted); display: block; margin-top: 15px; margin-bottom: 8px; }
-        input, select { width: 100%; padding: 14px; border: 2px solid var(--border); border-radius: 10px; box-sizing: border-box; font-size: 16px; font-weight: bold; background: var(--bg); transition: 0.3s; }
+        .badge { padding: 6px 12px; border-radius: 8px; font-size: 13px; font-weight: bold; color: white; display: inline-block; }
+        .batch-actions { display: flex; gap: 10px; margin-top: 10px; }
+        .batch-actions button { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 8px 15px; cursor: pointer; font-size: 16px; transition: 0.2s; }
+        .batch-actions button:hover { background: var(--border); }
+
+        /* Forms & Inputs */
+        label { font-weight: bold; font-size: 15px; color: var(--text-muted); display: block; margin-top: 15px; margin-bottom: 8px; }
+        input, select { width: 100%; padding: 16px; border: 2px solid var(--border); border-radius: 10px; box-sizing: border-box; font-size: 18px; font-weight: bold; background: var(--bg); transition: 0.3s; }
         input:focus, select:focus { border-color: var(--info); outline: none; background: #fff; }
         
-        button.btn { border: none; padding: 16px; border-radius: 12px; width: 100%; font-size: 16px; cursor: pointer; font-weight: bold; margin-top: 20px; color: white; display: flex; justify-content: center; align-items: center; gap: 8px; transition: 0.2s; }
+        button.btn { border: none; padding: 16px; border-radius: 12px; width: 100%; font-size: 18px; cursor: pointer; font-weight: bold; margin-top: 20px; color: white; display: flex; justify-content: center; align-items: center; gap: 8px; transition: 0.2s; }
         button.btn:active { transform: scale(0.97); }
-        .btn-primary { background: var(--primary); } .btn-success { background: var(--success); } .btn-danger { background: var(--danger); } .btn-info { background: var(--info); }
-        
-        /* Action FAB (Floating Action Button) */
-        .fab-container { position: fixed; bottom: 100px; right: 20px; z-index: 2000; }
-        .fab { background: var(--primary); color: white; width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 4px 15px rgba(25, 42, 86, 0.4); border: none; cursor: pointer; transition: 0.3s; }
-        .fab-menu { display: none; position: absolute; bottom: 75px; right: 0; background: var(--card-bg); border-radius: 15px; box-shadow: 0 5px 25px rgba(0,0,0,0.15); width: 220px; padding: 10px; flex-direction: column; gap: 5px; }
-        .fab-menu.active { display: flex; animation: slideUp 0.2s ease-out; }
-        .fab-item { background: transparent; border: none; padding: 12px 15px; font-size: 15px; font-weight: bold; text-align: right; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 10px; color: var(--text-main); }
-        .fab-item:hover { background: var(--bg); }
+        .btn-primary { background: var(--primary); }
+        .btn-success { background: var(--success); }
+        .btn-danger { background: var(--danger); }
+        .btn-info { background: var(--info); }
+        .btn-warning { background: var(--warning); color: #000; }
 
-        /* Modals (Clean Data Entry) */
+        /* Modals */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(3px); z-index: 2500; justify-content: center; align-items: flex-end; }
-        .modal-content { background: var(--card-bg); width: 100%; max-width: 500px; border-radius: 25px 25px 0 0; padding: 30px 20px; box-sizing: border-box; animation: slideUp 0.3s ease-out; max-height: 90vh; overflow-y: auto; }
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        .close-modal { position: absolute; left: 20px; top: 20px; background: var(--bg); border: none; color: var(--danger); width: 35px; height: 35px; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .modal-content { background: var(--card-bg); width: 100%; max-width: 500px; border-radius: 25px 25px 0 0; padding: 30px 20px; box-sizing: border-box; max-height: 90vh; overflow-y: auto; position: relative;}
+        .close-modal { position: absolute; left: 20px; top: 20px; background: var(--bg); border: none; color: var(--danger); width: 35px; height: 35px; border-radius: 50%; font-size: 20px; cursor: pointer; }
 
-        #toast { display: none; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); color: white; padding: 15px 25px; border-radius: 30px; z-index: 3000; font-weight: bold; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        #toast { display: none; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); color: white; padding: 15px 25px; border-radius: 30px; z-index: 3000; font-weight: bold; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); width: 80%; }
+        
+        .dates-row { display: flex; flex-wrap: wrap; gap: 8px; font-size: 12px; margin-top: 10px; background: var(--bg); padding: 10px; border-radius: 8px;}
     </style>
 </head>
 <body>
 
     <div id="toast"></div>
 
-    <!-- زر الإضافة الشامل (القائمة العائمة) -->
-    <div class="fab-container">
-        <button class="fab" onclick="toggleFab()"><i class="fas fa-plus"></i></button>
-        <div class="fab-menu" id="fabMenu">
-            <button class="fab-item" onclick="openModal('modalBatch')"><i class="fas fa-egg text-info"></i> إدخال دفعة للماكينة</button>
-            <button class="fab-item" onclick="openModal('modalDaily')"><i class="fas fa-clipboard-list text-warning"></i> تسجيل (علف/نافق)</button>
-            <div style="height: 1px; background: var(--border); margin: 5px 0;"></div>
-            <button class="fab-item" onclick="openModal('modalExpense')"><i class="fas fa-money-bill-wave text-danger"></i> تسجيل مصروف</button>
-            <button class="fab-item" onclick="openModal('modalSale')"><i class="fas fa-hand-holding-dollar text-success"></i> تسجيل مبيعات</button>
-        </div>
-    </div>
-
     <!-- شريط التنقل السفلي -->
     <nav class="bottom-nav">
         <div class="nav-item active" onclick="switchPage('dashboard')"><i class="fas fa-chart-pie"></i><span>الرئيسية</span></div>
         <div class="nav-item" onclick="switchPage('incubator')"><i class="fas fa-temperature-half"></i><span>تفريخ</span></div>
         <div class="nav-item" onclick="switchPage('rearing')"><i class="fas fa-kiwi-bird"></i><span>تربية</span></div>
-        <div class="nav-item" onclick="switchPage('freezer')"><i class="fas fa-snowflake"></i><span>فريزر</span></div>
-        <div class="nav-item" onclick="switchPage('finance')"><i class="fas fa-wallet"></i><span>الحسابات</span></div>
+        <div class="nav-item" onclick="switchPage('finance')"><i class="fas fa-wallet"></i><span>حسابات</span></div>
+        <div class="nav-item" onclick="switchPage('settingsPage')"><i class="fas fa-cog"></i><span>إعدادات</span></div>
     </nav>
 
     <!-- 1. الرئيسية (Dashboard) -->
     <div id="dashboard" class="page-view active">
         <div class="header-title">
             <span>لوحة القيادة</span>
-            <i class="fas fa-bell" style="font-size: 20px;"></i>
+            <div>
+                <button onclick="openModal('modalBatch')" style="background:none;border:none;color:white;font-size:22px;"><i class="fas fa-plus-circle"></i></button>
+            </div>
         </div>
-        
+
         <div class="card">
-            <div class="card-header">ملخص المزرعة السريع</div>
             <div class="grid-2">
-                <div class="stat-box">بيض بالماكينة<span class="num" id="dashEggs">0</span></div>
-                <div class="stat-box">طائر بالتربية<span class="num" id="dashChicks">0</span></div>
-                <div class="stat-box" style="background:#e8f8f5;">مخزون الفريزر<span class="num text-success" id="dashFreezer">0</span></div>
-                <div class="stat-box" style="background:#fef5e7;">مبيعات الشهر<span class="num text-warning" id="dashSales">0 ج</span></div>
+                <button class="btn btn-warning" onclick="openModal('modalDaily')" style="margin-top:0; padding:12px; font-size:14px;"><i class="fas fa-clipboard-list"></i> علف/نافق</button>
+                <button class="btn btn-success" onclick="openModal('modalSale')" style="margin-top:0; padding:12px; font-size:14px;"><i class="fas fa-shopping-cart"></i> بيع مباشر</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">ملخص المزرعة</div>
+            <div class="grid-2">
+                <div class="stat-box">بالماكينة<span class="num" id="dashEggs">0</span></div>
+                <div class="stat-box">بالعنابر<span class="num" id="dashChicks">0</span></div>
+                <div class="stat-box" style="background:#e8f8f5;">بالفريزر<span class="num text-success" id="dashFreezer">0</span></div>
+                <div class="stat-box" style="background:#fef5e7;">مبيعات<span class="num text-warning" id="dashSales">0</span></div>
             </div>
         </div>
 
         <div class="card" style="border-right: 4px solid var(--danger);">
             <div class="card-header" style="color:var(--danger); border:none; margin:0; padding:0;">
-                <i class="fas fa-exclamation-circle"></i> مهام وتنبيهات اليوم
+                <i class="fas fa-exclamation-circle"></i> مهام وتنبيهات
             </div>
-            <div id="alertsContainer" style="margin-top: 15px; font-size: 14px; line-height: 1.6;">
-                جاري فحص حالة المزرعة...
-            </div>
+            <div id="alertsContainer" style="margin-top: 15px; font-size: 14px; line-height: 1.6;">جاري التحميل...</div>
         </div>
     </div>
 
-    <!-- 2. التفريخ (18 يوم) -->
+    <!-- 2. التفريخ -->
     <div id="incubator" class="page-view">
         <div class="header-title">إدارة التفريخ والمفقس</div>
-        <div class="card">
-            <div class="card-header">الدفعات الحالية</div>
-            <div id="incubatorList">لا توجد دفعات. اضغط على + لإضافة دفعة.</div>
-        </div>
+        <div id="incubatorList"></div>
     </div>
 
-    <!-- 3. التربية والذبح -->
+    <!-- 3. التربية -->
     <div id="rearing" class="page-view">
         <div class="header-title">عنابر التربية والذبح</div>
-        <div class="card">
-            <div class="card-header">قطعان التربية (متابعة النمو)</div>
-            <div id="rearingList">لا يوجد طيور في عنابر التربية.</div>
-        </div>
-        <div class="card" style="border-right: 4px solid var(--danger);">
-            <div class="card-header text-danger">دفعات قيد الذبح والتجهيز</div>
-            <div id="slaughterList">لا يوجد.</div>
-        </div>
+        <div id="rearingList"></div>
+        <div class="card-header text-danger" style="margin-top:20px;">قيد الذبح والتجهيز</div>
+        <div id="slaughterList"></div>
     </div>
 
-    <!-- 4. الفريزر -->
-    <div id="freezer" class="page-view">
-        <div class="header-title">المخزون (الفريزر)</div>
-        <div class="card">
-            <div class="card-header">الأرصدة الحالية (بالجوز)</div>
-            <div class="grid-2" id="freezerGrid">
-                <!-- يولد برمجياً -->
-            </div>
-        </div>
-    </div>
-
-    <!-- 5. الحسابات (Ledger) -->
+    <!-- 4. الحسابات والنتائج -->
     <div id="finance" class="page-view">
-        <div class="header-title">السجل المالي الشامل</div>
+        <div class="header-title">الماليات والنتائج</div>
         
         <div class="card" style="background: var(--primary); color: white;">
             <div style="text-align: center;">
-                <span style="font-size: 14px; opacity: 0.8;">صافي أرباح المزرعة (إجمالي)</span>
+                <span style="font-size: 14px; opacity: 0.8;">صافي الربح العام</span>
                 <div style="font-size: 32px; font-weight: 900; margin: 10px 0;" id="netProfit">0 ج.م</div>
             </div>
             <div class="grid-2" style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
                 <div style="text-align: center;">إيرادات<br><strong class="text-success" id="totalRev" style="font-size: 18px;">0</strong></div>
                 <div style="text-align: center;">مصروفات<br><strong style="color:#ff7675; font-size: 18px;" id="totalExp">0</strong></div>
             </div>
+            <button class="btn" style="background:rgba(255,255,255,0.2); margin-top:15px; font-size:14px;" onclick="openModal('modalExpense')">تسجيل مصروف جديد</button>
         </div>
 
         <div class="card">
-            <div class="card-header">حساب تكلفة الدفعات (P&L)</div>
+            <div class="card-header">نتيجة وتكلفة الدفعة (P&L)</div>
             <select id="reportBatchSelect" onchange="generateBatchReport()">
-                <option value="">-- اختر دفعة لعرض تكلفتها --</option>
+                <option value="">-- اختر الدفعة --</option>
             </select>
-            <div id="batchReportContainer" style="margin-top: 15px; padding: 15px; background: var(--bg); border-radius: 10px; display: none;">
-                <!-- يولد برمجياً -->
-            </div>
+            <div id="batchReportContainer" style="margin-top: 15px; display: none;"></div>
         </div>
 
         <div class="card">
-            <div class="card-header">سجل المعاملات الأخير (Ledger)</div>
-            <div id="ledgerList">لا توجد معاملات مالية مسجلة.</div>
+            <div class="card-header">سجل المعاملات</div>
+            <div id="ledgerList"></div>
         </div>
     </div>
 
-    <!-- ================= النوافذ المنبثقة (Modals للإدخال فقط) ================= -->
+    <!-- 5. الإعدادات -->
+    <div id="settingsPage" class="page-view">
+        <div class="header-title">إعدادات النظام ⚙️</div>
+        
+        <div class="card">
+            <div class="card-header">أسعار التشغيل والبيع</div>
+            <label>سعر كيلو العلف (ج.م)</label>
+            <input type="number" id="setFeed" value="30">
+            
+            <label>سعر جوز الرويال (ج.م)</label>
+            <input type="number" id="setRoyal" value="120">
+            
+            <label>سعر جوز سوبر سبشيال (ج.م)</label>
+            <input type="number" id="setSuperSpecial" value="110">
+            
+            <label>سعر جوز سبشيال (ج.م)</label>
+            <input type="number" id="setSpecial" value="100">
+            
+            <label>سعر جوز جامبو (ج.م)</label>
+            <input type="number" id="setJumbo" value="90">
+            
+            <label>سعر جوز سوبر (ج.م)</label>
+            <input type="number" id="setSuper" value="80">
 
+            <button class="btn btn-primary" onclick="saveSettings()">حفظ الإعدادات 💾</button>
+        </div>
+
+        <div class="card" style="border: 2px solid var(--danger);">
+            <div class="card-header text-danger">منطقة الخطر ⚠️</div>
+            <button class="btn btn-danger" onclick="resetSystem()">تصفير كل بيانات النظام 🔄</button>
+        </div>
+    </div>
+
+
+    <!-- ================= Modals ================= -->
     <!-- Modal: إدخال دفعة للماكينة -->
     <div id="modalBatch" class="modal-overlay">
         <div class="modal-content">
             <button class="close-modal" onclick="closeModal('modalBatch')">×</button>
-            <h3 style="margin-top: 0; color: var(--primary);">🥚 إدخال دفعة جديدة</h3>
+            <h3 style="margin-top: 0; color: var(--info);">🥚 إدخال دفعة جديدة</h3>
             <label>اسم/كود الدفعة</label>
-            <input type="text" id="bName" placeholder="مثال: دفعة 1 - مصدر كذا">
-            <label>عدد البيض</label>
-            <input type="number" id="bEggs" placeholder="إجمالي البيض بالماكينة">
+            <input type="text" id="bName" placeholder="مثال: دفعة 1">
+            <label>عدد البيض الكلي</label>
+            <input type="number" id="bEggs">
             <label>تاريخ الدخول</label>
             <input type="date" id="bDate">
-            <button class="btn btn-info" onclick="saveNewBatch()">بدء التفريخ (18 يوم)</button>
+            <button class="btn btn-info" onclick="saveNewBatch()">حساب التواريخ وبدء التفريخ</button>
         </div>
     </div>
 
@@ -210,37 +252,15 @@
     <div id="modalDaily" class="modal-overlay">
         <div class="modal-content">
             <button class="close-modal" onclick="closeModal('modalDaily')">×</button>
-            <h3 style="margin-top: 0; color: var(--warning);">📝 تسجيل متابعة التربية</h3>
-            <label>اختر الدفعة (بالتربية)</label>
+            <h3 style="margin-top: 0; color: var(--warning);">📝 تسجيل يومي (تلقائي الحساب)</h3>
+            <label>الدفعة</label>
             <select id="dBatch"></select>
             <div class="grid-2">
                 <div><label>نافق (طائر)</label><input type="number" id="dDead" value="0"></div>
                 <div><label>علف (كجم)</label><input type="number" id="dFeed" value="0"></div>
             </div>
+            <p style="font-size:12px; color:var(--text-muted); margin-top:10px;">* سيتم سحب سعر العلف من الإعدادات وتسجيل التكلفة في الحسابات فوراً.</p>
             <button class="btn btn-warning" onclick="saveDailyLog()">حفظ السجل</button>
-        </div>
-    </div>
-
-    <!-- Modal: تسجيل مصروف -->
-    <div id="modalExpense" class="modal-overlay">
-        <div class="modal-content">
-            <button class="close-modal" onclick="closeModal('modalExpense')">×</button>
-            <h3 style="margin-top: 0; color: var(--danger);">💸 إذن صرف (مصروفات)</h3>
-            <label>المبلغ (ج.م)</label>
-            <input type="number" id="eAmount" placeholder="القيمة">
-            <label>بند الصرف</label>
-            <select id="eType">
-                <option>شراء بيض/كتاكيت</option>
-                <option>علف</option>
-                <option>أدوية</option>
-                <option>كهرباء وتدفئة</option>
-                <option>عمالة ومصاريف دبح</option>
-                <option>أكياس وتغليف</option>
-                <option>مصروفات عامة</option>
-            </select>
-            <label>تحميل المصروف على دفعة؟ (اختياري لحساب التكلفة)</label>
-            <select id="eBatch"><option value="general">مصروف عام (لا يخص دفعة معينة)</option></select>
-            <button class="btn btn-danger" onclick="saveTransaction('out')">تسجيل المصروف</button>
         </div>
     </div>
 
@@ -248,9 +268,9 @@
     <div id="modalSale" class="modal-overlay">
         <div class="modal-content">
             <button class="close-modal" onclick="closeModal('modalSale')">×</button>
-            <h3 style="margin-top: 0; color: var(--success);">🛒 فاتورة مبيعات</h3>
+            <h3 style="margin-top: 0; color: var(--success);">🛒 فاتورة مبيعات (حساب تلقائي)</h3>
             <label>الصنف المُباع</label>
-            <select id="sGrade">
+            <select id="sGrade" onchange="calculateSaleTotal()">
                 <option value="royal">رويال</option>
                 <option value="super_special">سوبر سبشيال</option>
                 <option value="special">سبشيال</option>
@@ -258,47 +278,54 @@
                 <option value="super">سوبر</option>
                 <option value="bad">كسر / فرز</option>
             </select>
-            <div class="grid-2">
-                <div><label>العدد (جوز)</label><input type="number" id="sQty"></div>
-                <div><label>إجمالي الفاتورة (ج)</label><input type="number" id="sAmount"></div>
+            <label>العدد (جوز)</label>
+            <input type="number" id="sQty" oninput="calculateSaleTotal()">
+            
+            <div style="background:var(--bg); padding:15px; border-radius:10px; margin-top:15px; text-align:center;">
+                <span style="color:var(--text-muted); font-size:14px;">إجمالي الفاتورة المطلوب</span>
+                <div id="saleTotalDisplay" style="font-size:30px; font-weight:900; color:var(--success);">0 ج.م</div>
             </div>
-            <p style="font-size: 12px; color: var(--danger); margin-top: 10px;">* سيتم خصم العدد من الفريزر تلقائياً وإضافة المبلغ للإيرادات.</p>
-            <button class="btn btn-success" onclick="processSale()">بيع وتحديث الأرصدة</button>
+            
+            <button class="btn btn-success" onclick="processSale()">تأكيد البيع وتحديث الأرصدة</button>
         </div>
     </div>
 
-    <!-- Modal: Workflow - نقل للمفقس -->
-    <div id="modalHatcher" class="modal-overlay">
+    <!-- Modal: تسجيل مصروف -->
+    <div id="modalExpense" class="modal-overlay">
         <div class="modal-content">
-            <button class="close-modal" onclick="closeModal('modalHatcher')">×</button>
-            <h3 style="margin-top: 0;">🥚 نقل الدفعة للمفقس (يوم 15)</h3>
-            <p style="color: var(--text-muted);">يجب إيقاف التقليب الآن ونقل البيض لصواني المفقس للاستعداد للفقس بعد 3 أيام.</p>
-            <input type="hidden" id="hatcherBatchId">
-            <button class="btn btn-info" onclick="moveToHatcher()">تأكيد النقل للمفقس</button>
+            <button class="close-modal" onclick="closeModal('modalExpense')">×</button>
+            <h3 style="margin-top: 0; color: var(--danger);">💸 إذن صرف</h3>
+            <label>المبلغ (ج.م)</label>
+            <input type="number" id="eAmount">
+            <label>بند الصرف</label>
+            <input type="text" id="eType" placeholder="مثال: كهرباء، أدوية، أكياس...">
+            <label>تحميل المصروف على دفعة؟</label>
+            <select id="eBatch"><option value="general">مصروف عام</option></select>
+            <button class="btn btn-danger" onclick="saveTransaction('out')">تسجيل المصروف</button>
         </div>
     </div>
 
-    <!-- Modal: Workflow - إتمام الفقس -->
+    <!-- Modal: إتمام الفقس -->
     <div id="modalHatch" class="modal-overlay">
         <div class="modal-content">
             <button class="close-modal" onclick="closeModal('modalHatch')">×</button>
-            <h3 style="margin-top: 0;">🐣 إتمام عملية الفقس (يوم 18)</h3>
+            <h3 style="margin-top: 0;">🐣 إتمام الفقس</h3>
             <input type="hidden" id="hatchBatchId">
-            <label>عدد الكتاكيت السليمة (المنقولة للتربية)</label>
-            <input type="number" id="hHealthy" style="font-size: 20px; color: var(--success);">
+            <label>كتاكيت سليمة (للتربية)</label>
+            <input type="number" id="hHealthy" style="font-size: 24px; color: var(--success);">
             <div class="grid-2">
-                <div><label>بيض غير مخصب</label><input type="number" id="hUnfert" value="0"></div>
-                <div><label>كبس (ميت بالبيضة)</label><input type="number" id="hDead" value="0"></div>
+                <div><label>غير مخصب</label><input type="number" id="hUnfert" value="0"></div>
+                <div><label>كبس/ميت</label><input type="number" id="hDead" value="0"></div>
             </div>
-            <button class="btn btn-primary" onclick="moveToRearing()">اعتماد ونقل لعنابر التربية</button>
+            <button class="btn btn-primary" onclick="moveToRearing()">اعتماد ونقل للتربية</button>
         </div>
     </div>
 
-    <!-- Modal: Workflow - التصنيف والذبح -->
+    <!-- Modal: التصنيف والذبح -->
     <div id="modalClassify" class="modal-overlay">
         <div class="modal-content">
             <button class="close-modal" onclick="closeModal('modalClassify')">×</button>
-            <h3 style="margin-top: 0;">⚖️ تصنيف الدفعة (بالجوز) وترحيل للفريزر</h3>
+            <h3 style="margin-top: 0;">⚖️ تصنيف الدفعة</h3>
             <input type="hidden" id="classBatchId">
             <div class="grid-2">
                 <div><label>رويال</label><input type="number" id="c_royal" value="0"></div>
@@ -308,47 +335,41 @@
                 <div><label>سوبر</label><input type="number" id="c_super" value="0"></div>
                 <div><label>فرز/كسر</label><input type="number" id="c_bad" value="0"></div>
             </div>
-            <button class="btn btn-success" onclick="finishSlaughter()">ترحيل للفريزر وإنهاء الدفعة</button>
+            <button class="btn btn-success" onclick="finishSlaughter()">إنهاء وتخزين بالفريزر</button>
         </div>
     </div>
-
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getDatabase, ref, set, get, push, update, remove, onValue } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
-        // إعدادات Firebase
         const firebaseConfig = {
-          apiKey: "AIzaSyCVlbWLaLqYnQVsWgFPTe4PL38bWLTLyuU",
-          authDomain: "sman-6512c.firebaseapp.com",
-          databaseURL: "https://sman-6512c-default-rtdb.firebaseio.com",
-          projectId: "sman-6512c",
-          storageBucket: "sman-6512c.firebasestorage.app"
+            apiKey: "AIzaSyCVlbWLaLqYnQVsWgFPTe4PL38bWLTLyuU",
+            authDomain: "sman-6512c.firebaseapp.com",
+            databaseURL: "https://sman-6512c-default-rtdb.firebaseio.com",
+            projectId: "sman-6512c",
+            storageBucket: "sman-6512c.firebasestorage.app"
         };
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // متغيرات الحالة (State)
+        // State variables
         let allBatches = {};
         let allTransactions = {};
+        let globalSettings = { feedPrice: 30, royal: 120, super_special: 110, special: 100, jumbo: 90, super: 80, bad: 0 };
         const gradeNames = { royal: 'رويال', super_special: 'سوبر سبشيال', special: 'سبشيال', jumbo: 'جامبو', super: 'سوبر', bad: 'كسر/فرز' };
 
-        // ================= UI & UX Functions =================
+        // ================= UI Functions =================
         window.switchPage = (pageId) => {
             document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
             event.currentTarget.classList.add('active');
-            document.getElementById('fabMenu').classList.remove('active');
         };
 
-        window.toggleFab = () => document.getElementById('fabMenu').classList.toggle('active');
-        window.openModal = (id) => { 
-            document.getElementById('fabMenu').classList.remove('active');
-            document.getElementById(id).style.display = 'flex'; 
-        };
+        window.openModal = (id) => document.getElementById(id).style.display = 'flex';
         window.closeModal = (id) => document.getElementById(id).style.display = 'none';
-
+        
         window.showToast = (msg, isError = false) => {
             const t = document.getElementById('toast');
             t.innerText = msg;
@@ -359,341 +380,362 @@
 
         document.getElementById('bDate').value = new Date().toISOString().split('T')[0];
 
-        // ================= 1. Data Entry Core (Create/Update) =================
+        // ================= Settings & Auto Calc =================
+        onValue(ref(db, "settings"), (snapshot) => {
+            if(snapshot.exists()) {
+                globalSettings = snapshot.val();
+                document.getElementById('setFeed').value = globalSettings.feedPrice;
+                document.getElementById('setRoyal').value = globalSettings.royal;
+                document.getElementById('setSuperSpecial').value = globalSettings.super_special;
+                document.getElementById('setSpecial').value = globalSettings.special;
+                document.getElementById('setJumbo').value = globalSettings.jumbo;
+                document.getElementById('setSuper').value = globalSettings.super;
+            }
+        });
+
+        window.saveSettings = async () => {
+            const newSet = {
+                feedPrice: parseFloat(document.getElementById('setFeed').value) || 0,
+                royal: parseFloat(document.getElementById('setRoyal').value) || 0,
+                super_special: parseFloat(document.getElementById('setSuperSpecial').value) || 0,
+                special: parseFloat(document.getElementById('setSpecial').value) || 0,
+                jumbo: parseFloat(document.getElementById('setJumbo').value) || 0,
+                super: parseFloat(document.getElementById('setSuper').value) || 0,
+                bad: 0
+            };
+            await set(ref(db, 'settings'), newSet);
+            showToast("تم تحديث الإعدادات والأسعار");
+        };
+
+        window.calculateSaleTotal = () => {
+            const grade = document.getElementById('sGrade').value;
+            const qty = parseInt(document.getElementById('sQty').value) || 0;
+            const price = globalSettings[grade] || 0;
+            document.getElementById('saleTotalDisplay').innerText = (qty * price) + " ج.م";
+        };
+
+        // ================= Core Operations =================
         window.saveNewBatch = async () => {
             const name = document.getElementById('bName').value;
             const eggs = parseInt(document.getElementById('bEggs').value);
-            const date = document.getElementById('bDate').value;
-
+            const dateStr = document.getElementById('bDate').value;
             if(!name || !eggs) return showToast("أكمل البيانات", true);
 
-            await push(ref(db, 'batches'), {
-                name, insertDate: date, initialEggs: eggs,
-                status: 'incubator', // المرحلة الأولى
-                totalDead: 0, totalFeed: 0
-            });
+            // Auto Calculate Dates (Modification 6)
+            const insertD = new Date(dateStr);
             
-            document.getElementById('bName').value = ''; document.getElementById('bEggs').value = '';
-            closeModal('modalBatch'); showToast("تم إدخال الدفعة للماكينة بنجاح");
+            const hatcherD = new Date(insertD); hatcherD.setDate(insertD.getDate() + 15);
+            const hatchD = new Date(insertD); hatchD.setDate(insertD.getDate() + 18);
+            const rearD = new Date(insertD); rearD.setDate(insertD.getDate() + 19);
+
+            await push(ref(db, 'batches'), { 
+                name, 
+                insertDate: dateStr,
+                hatcherDate: hatcherD.toISOString().split('T')[0],
+                hatchDate: hatchD.toISOString().split('T')[0],
+                rearDate: rearD.toISOString().split('T')[0],
+                initialEggs: eggs, 
+                status: 'incubator',
+                totalDead: 0, 
+                totalFeed: 0 
+            });
+            document.getElementById('bName').value = '';
+            document.getElementById('bEggs').value = '';
+            closeModal('modalBatch');
+            showToast("تم إدخال الدفعة وحساب التواريخ تلقائياً");
         };
 
         window.saveDailyLog = async () => {
             const id = document.getElementById('dBatch').value;
             const dead = parseInt(document.getElementById('dDead').value) || 0;
             const feed = parseFloat(document.getElementById('dFeed').value) || 0;
-
-            if(!id || (dead===0 && feed===0)) return showToast("اختر دفعة وأدخل قيمة", true);
+            if(!id || (dead===0 && feed===0)) return showToast("أدخل بيانات صحيحة", true);
 
             const b = allBatches[id];
-            await update(ref(db, `batches/${id}`), { totalDead: (b.totalDead||0) + dead, totalFeed: (b.totalFeed||0) + feed });
-            
-            document.getElementById('dDead').value = 0; document.getElementById('dFeed').value = 0;
-            closeModal('modalDaily'); showToast("تم حفظ سجل التربية");
+            const today = new Date().toISOString().split('T')[0];
+
+            // Save log (Modification 7)
+            await push(ref(db, `batches/${id}/dailyLogs`), { date: today, dead, feed });
+
+            // Auto calculate feed cost (Modification 8)
+            if(feed > 0) {
+                const cost = feed * (globalSettings.feedPrice || 30);
+                await push(ref(db, 'ledger'), { type: 'out', amount: cost, desc: `علف تلقائي (${feed}ك) - ${b.name}`, batchId: id, date: today, timestamp: Date.now() });
+            }
+
+            await update(ref(db, `batches/${id}`), { 
+                totalDead: (b.totalDead||0) + dead, 
+                totalFeed: (b.totalFeed||0) + feed 
+            });
+
+            document.getElementById('dDead').value = 0;
+            document.getElementById('dFeed').value = 0;
+            closeModal('modalDaily');
+            showToast("تم حفظ السجل واحتساب التكلفة");
         };
 
-        // ================= 2. Financial Core (Ledger) =================
         window.saveTransaction = async (type, amountOverride = null, descOverride = null) => {
             const amount = amountOverride || parseFloat(document.getElementById('eAmount').value);
             const desc = descOverride || document.getElementById('eType').value;
             const batchId = type === 'out' ? document.getElementById('eBatch').value : 'general';
-
             if(!amount) return showToast("أدخل المبلغ", true);
 
-            await push(ref(db, 'ledger'), {
-                type, amount, desc, batchId,
-                date: new Date().toISOString().split('T')[0],
-                timestamp: Date.now()
-            });
-
+            await push(ref(db, 'ledger'), { type, amount, desc, batchId, date: new Date().toISOString().split('T')[0], timestamp: Date.now() });
+            
             if(!amountOverride) {
                 document.getElementById('eAmount').value = '';
-                closeModal('modalExpense'); showToast("تم تسجيل المعاملة بالدفتر");
+                document.getElementById('eType').value = '';
+                closeModal('modalExpense');
+                showToast("تم التسجيل بالدفتر");
             }
         };
 
         window.processSale = async () => {
             const grade = document.getElementById('sGrade').value;
-            const qty = parseInt(document.getElementById('sQty').value);
-            const amount = parseFloat(document.getElementById('sAmount').value);
+            const qty = parseInt(document.getElementById('sQty').value) || 0;
+            const price = globalSettings[grade] || 0;
+            const amount = qty * price;
 
-            if(!qty || !amount) return showToast("أدخل العدد والمبلغ", true);
+            if(!qty) return showToast("أدخل العدد", true);
 
-            // 1. Check & Update Freezer
             const snap = await get(ref(db, `inventory/freezer/${grade}`));
             const currentStock = snap.exists() ? snap.val() : 0;
-            
-            if(currentStock < qty) return showToast(`لا يوجد رصيد كافٍ! المتاح: ${currentStock}`, true);
-            await set(ref(db, `inventory/freezer/${grade}`), currentStock - qty);
+            if(currentStock < qty) return showToast(`لا يوجد رصيد! المتاح: ${currentStock}`, true);
 
-            // 2. Add to Ledger
+            await set(ref(db, `inventory/freezer/${grade}`), currentStock - qty);
             await saveTransaction('in', amount, `مبيعات (${qty} جوز - ${gradeNames[grade]})`);
             
-            document.getElementById('sQty').value = ''; document.getElementById('sAmount').value = '';
-            closeModal('modalSale'); showToast("تم البيع بنجاح وتحديث الأرصدة");
+            document.getElementById('sQty').value = '';
+            document.getElementById('saleTotalDisplay').innerText = "0 ج.م";
+            closeModal('modalSale');
+            showToast("تم البيع بنجاح وتحديث الأرصدة");
         };
 
-        // ================= 3. Workflow Logic (18 Days Cycle) =================
-        
-        // Step A: Move to Hatcher (Day 15)
-        window.promptHatcher = (id) => {
-            document.getElementById('hatcherBatchId').value = id;
-            openModal('modalHatcher');
-        };
-        window.moveToHatcher = async () => {
-            const id = document.getElementById('hatcherBatchId').value;
-            await update(ref(db, `batches/${id}`), { status: 'hatcher' });
-            closeModal('modalHatcher'); showToast("تم النقل لصواني المفقس");
-        };
-
-        // Step B: Hatching (Day 18)
-        window.promptHatch = (id) => {
-            document.getElementById('hatchBatchId').value = id;
-            openModal('modalHatch');
-        };
-        window.moveToRearing = async () => {
-            const id = document.getElementById('hatchBatchId').value;
-            const healthy = parseInt(document.getElementById('hHealthy').value);
-            if(!healthy) return showToast("أدخل عدد الكتاكيت", true);
-
-            await update(ref(db, `batches/${id}`), {
-                status: 'rearing', hatchDate: new Date().toISOString().split('T')[0],
-                hatchedChicks: healthy,
-                unfertilized: parseInt(document.getElementById('hUnfert').value)||0,
-                deadInShell: parseInt(document.getElementById('hDead').value)||0
-            });
-            closeModal('modalHatch'); showToast("تم النقل لعنابر التربية بنجاح");
-        };
-
-        // Step C: To Slaughter
-        window.moveToSlaughter = async (id) => {
-            if(confirm("هل أنت متأكد من إنهاء التربية ونقل الطيور المتبقية لغرفة الذبح؟")) {
-                await update(ref(db, `batches/${id}`), { status: 'slaughter' });
-                showToast("الدفعة الآن قيد التجهيز");
+        // ================= Action Buttons (Delete & Reset) =================
+        window.deleteBatch = async (id) => {
+            if(confirm("⚠️ هل أنت متأكد من حذف هذه الدفعة نهائياً؟ سيتم مسحها من السجلات.")) {
+                await remove(ref(db, `batches/${id}`));
+                showToast("تم حذف الدفعة");
             }
         };
 
-        // Step D: Classify & Freezer
-        window.promptClassify = (id) => {
-            document.getElementById('classBatchId').value = id;
-            openModal('modalClassify');
+        window.resetSystem = async () => {
+            if(confirm("🛑 تحذير خطير: هل تريد مسح كل بيانات النظام (دفعات، فريزر، حسابات) والبدء من الصفر؟ لا يمكن التراجع!")) {
+                let p = prompt("اكتب كلمة 'تأكيد' لمسح البيانات:");
+                if(p === 'تأكيد') {
+                    await remove(ref(db, 'batches'));
+                    await remove(ref(db, 'ledger'));
+                    await remove(ref(db, 'inventory'));
+                    showToast("تم تصفير النظام بالكامل");
+                }
+            }
         };
+
+        // ================= Workflow =================
+        window.updateStage = async (id, stage) => { await update(ref(db, `batches/${id}`), { status: stage }); };
+
+        window.promptHatch = (id) => { document.getElementById('hatchBatchId').value = id; openModal('modalHatch'); };
+        window.moveToRearing = async () => {
+            const id = document.getElementById('hatchBatchId').value;
+            const healthy = parseInt(document.getElementById('hHealthy').value);
+            if(!healthy) return showToast("أدخل العدد", true);
+            await update(ref(db, `batches/${id}`), { status: 'rearing', hatchedChicks: healthy, unfertilized: parseInt(document.getElementById('hUnfert').value)||0, deadInShell: parseInt(document.getElementById('hDead').value)||0 });
+            closeModal('modalHatch'); showToast("تم النقل للتربية");
+        };
+
+        window.promptClassify = (id) => { document.getElementById('classBatchId').value = id; openModal('modalClassify'); };
         window.finishSlaughter = async () => {
             const id = document.getElementById('classBatchId').value;
             let yieldTotal = 0; const toAdd = {};
-            
             Object.keys(gradeNames).forEach(g => {
                 const val = parseInt(document.getElementById(`c_${g}`).value) || 0;
-                toAdd[g] = val;
-                if(g !== 'bad') yieldTotal += val;
+                toAdd[g] = val; if(g !== 'bad') yieldTotal += val;
             });
-
             if(yieldTotal === 0 && toAdd['bad'] === 0) return showToast("أدخل ناتج التصنيف", true);
 
-            // Update Freezer
             const snap = await get(ref(db, "inventory/freezer"));
             let currentF = snap.exists() ? snap.val() : {};
             Object.keys(toAdd).forEach(g => currentF[g] = (currentF[g]||0) + toAdd[g]);
+            
             await set(ref(db, "inventory/freezer"), currentF);
-
-            // Finish Batch
-            await update(ref(db, `batches/${id}`), { status: 'completed', slaughterYield: yieldTotal });
-            closeModal('modalClassify'); showToast("تم ترحيل الأرصدة للفريزر واكتملت الدورة");
+            await update(ref(db, `batches/${id}`), { status: 'completed', slaughterYield: yieldTotal, classifyData: toAdd });
+            closeModal('modalClassify'); showToast("اكتملت الدفعة وتم ترحيل الأرصدة");
         };
 
-
-        // ================= 4. Realtime Rendering =================
-        
-        // Listen to Batches
+        // ================= Realtime Rendering =================
         onValue(ref(db, "batches"), (snapshot) => {
             allBatches = snapshot.exists() ? snapshot.val() : {};
             renderBatches();
-        });
-
-        function renderBatches() {
-            const ui = {
-                inc: document.getElementById('incubatorList'),
-                rear: document.getElementById('rearingList'),
-                slaugh: document.getElementById('slaughterList'),
-                alerts: document.getElementById('alertsContainer'),
-                dSelect: document.getElementById('dBatch'),
-                eSelect: document.getElementById('eBatch'),
-                rSelect: document.getElementById('reportBatchSelect')
-            };
-            
-            ui.inc.innerHTML = ''; ui.rear.innerHTML = ''; ui.slaugh.innerHTML = ''; ui.alerts.innerHTML = '';
-            ui.dSelect.innerHTML = ''; 
-            ui.eSelect.innerHTML = '<option value="general">مصروف عام (لا يخص دفعة معينة)</option>';
-            ui.rSelect.innerHTML = '<option value="">-- اختر دفعة لعرض تكلفتها --</option>';
-            
-            let stats = { eggs: 0, chicks: 0 };
-            const now = new Date();
-
-            Object.keys(allBatches).forEach(id => {
-                const b = allBatches[id];
-                
-                // Add to Selects (for reporting and expenses)
-                ui.rSelect.innerHTML += `<option value="${id}">${b.name} (${b.status === 'completed' ? 'مكتملة' : 'نشطة'})</option>`;
-                if(b.status !== 'completed') ui.eSelect.innerHTML += `<option value="${id}">${b.name}</option>`;
-
-                // 1. Incubator & Hatcher (0-18 Days)
-                if (b.status === 'incubator' || b.status === 'hatcher') {
-                    stats.eggs += b.initialEggs;
-                    const daysIn = Math.floor((now - new Date(b.insertDate)) / 86400000);
-                    
-                    let actionBtn = ''; let badge = '';
-                    if(b.status === 'incubator') {
-                        badge = `<span class="badge" style="background:var(--info);">حضانة - يوم ${daysIn}</span>`;
-                        if(daysIn >= 15) {
-                            actionBtn = `<button class="btn btn-info" style="padding:10px; margin-top:10px;" onclick="promptHatcher('${id}')">إيقاف تقليب ونقل للمفقس</button>`;
-                            ui.alerts.innerHTML += `<div style="color:var(--info); margin-bottom:10px;">⚠️ الدفعة <b>${b.name}</b> أتمت 15 يوماً. انقلها للمفقس.</div>`;
-                        }
-                    } else if (b.status === 'hatcher') {
-                        badge = `<span class="badge" style="background:var(--purple);">مفقس - يوم ${daysIn}</span>`;
-                        if(daysIn >= 18) {
-                            actionBtn = `<button class="btn btn-primary" style="padding:10px; margin-top:10px;" onclick="promptHatch('${id}')">تسجيل أعداد الفقس والنقل</button>`;
-                            ui.alerts.innerHTML += `<div style="color:var(--purple); margin-bottom:10px;">🐣 الدفعة <b>${b.name}</b> أتمت 18 يوماً. حان وقت الفقس!</div>`;
-                        }
-                    }
-
-                    ui.inc.innerHTML += `
-                        <div class="batch-card">
-                            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                                <strong style="font-size:18px;">${b.name}</strong> ${badge}
-                            </div>
-                            <div style="font-size:14px; color:var(--text-muted);">🥚 إجمالي البيض: <b>${b.initialEggs}</b> | دخول: ${b.insertDate}</div>
-                            ${actionBtn}
-                        </div>`;
-                }
-                
-                // 2. Rearing
-                else if (b.status === 'rearing') {
-                    const alive = b.hatchedChicks - (b.totalDead||0);
-                    stats.chicks += alive;
-                    const age = Math.floor((now - new Date(b.hatchDate)) / 86400000);
-                    ui.dSelect.innerHTML += `<option value="${id}">${b.name} (عمر ${age} يوم)</option>`;
-
-                    if(age >= 35) ui.alerts.innerHTML += `<div style="color:var(--danger); margin-bottom:10px;">⏳ الدفعة <b>${b.name}</b> بلغت ${age} يوم. جاهزة للذبح!</div>`;
-
-                    ui.rear.innerHTML += `
-                        <div class="batch-card" style="border-right: 4px solid var(--warning);">
-                            <div style="display:flex; justify-content:space-between;">
-                                <strong>${b.name}</strong> <span class="badge" style="background:var(--warning);">عمر ${age} يوم</span>
-                            </div>
-                            <div class="grid-2" style="margin-top:10px; font-size:13px; background:var(--bg); padding:10px; border-radius:8px;">
-                                <div>متبقي حي: <b>${alive}</b></div>
-                                <div>نافق: <b class="text-danger">${b.totalDead||0}</b></div>
-                                <div>علف: <b>${b.totalFeed||0} كجم</b></div>
-                            </div>
-                            <button class="btn btn-danger" style="padding:10px; margin-top:10px;" onclick="moveToSlaughter('${id}')">نقل لغرفة الذبح</button>
-                        </div>`;
-                }
-
-                // 3. Slaughter
-                else if (b.status === 'slaughter') {
-                    ui.slaugh.innerHTML += `
-                        <div class="batch-card" style="border-right: 4px solid var(--danger);">
-                            <strong>${b.name}</strong>
-                            <button class="btn btn-success" style="padding:10px; margin-top:10px;" onclick="promptClassify('${id}')">تصنيف وترحيل للفريزر</button>
-                        </div>`;
-                }
-            });
-
-            if(ui.alerts.innerHTML === '') ui.alerts.innerHTML = '<div class="text-success" style="font-weight:bold;">✅ لا يوجد تنبيهات. الأمور تسير حسب الجدول.</div>';
-            document.getElementById('dashEggs').innerText = stats.eggs;
-            document.getElementById('dashChicks').innerText = stats.chicks;
-        }
-
-        // Listen to Freezer
-        onValue(ref(db, "inventory/freezer"), (snapshot) => {
-            const data = snapshot.exists() ? snapshot.val() : {};
-            let total = 0;
-            let html = '';
-            
-            Object.keys(gradeNames).forEach(g => {
-                if(g === 'bad') return;
-                const count = data[g] || 0;
-                total += count;
-                html += `
-                    <div style="background:var(--bg); padding:15px; border-radius:10px; text-align:center; border:1px solid var(--border);">
-                        <span style="font-size:13px; color:var(--text-muted); font-weight:bold;">${gradeNames[g]}</span>
-                        <div style="font-size:22px; font-weight:900; color:var(--primary); margin-top:5px;">${count}</div>
-                    </div>`;
-            });
-            document.getElementById('freezerGrid').innerHTML = html;
-            document.getElementById('dashFreezer').innerText = total;
-        });
-
-        // Listen to Ledger (Financials)
-        onValue(ref(db, "ledger"), (snapshot) => {
-            allTransactions = snapshot.exists() ? snapshot.val() : {};
-            let tIn = 0; let tOut = 0;
-            let html = '';
-
-            // Sort by timestamp descending
-            const sortedKeys = Object.keys(allTransactions).sort((a,b) => allTransactions[b].timestamp - allTransactions[a].timestamp);
-            
-            sortedKeys.forEach(id => {
-                const t = allTransactions[id];
-                if(t.type === 'in') tIn += t.amount; else tOut += t.amount;
-                
-                const color = t.type === 'in' ? 'text-success' : 'text-danger';
-                const sign = t.type === 'in' ? '+' : '-';
-                
-                html += `
-                    <div class="transaction-item">
-                        <div>
-                            <strong style="display:block; font-size:15px;">${t.desc}</strong>
-                            <span style="font-size:12px; color:var(--text-muted);">${t.date} | ${t.batchId === 'general' ? 'عام' : (allBatches[t.batchId]?.name || 'محذوف')}</span>
-                        </div>
-                        <div class="${color}" style="font-weight:900; font-size:18px;" dir="ltr">${sign} ${t.amount} ج</div>
-                    </div>`;
-            });
-
-            document.getElementById('totalRev').innerText = tIn;
-            document.getElementById('totalExp').innerText = tOut;
-            document.getElementById('netProfit').innerText = (tIn - tOut) + " ج.م";
-            document.getElementById('dashSales').innerText = tIn + " ج"; // Simplified for dashboard
-            
-            if(html === '') html = '<div style="padding:15px; text-align:center; color:var(--text-muted);">الدفتر فارغ</div>';
-            document.getElementById('ledgerList').innerHTML = html;
-            
-            // Refresh batch report if open
             if(document.getElementById('reportBatchSelect').value) window.generateBatchReport();
         });
 
-        // Generate P&L per Batch
+        function renderBatches() {
+            const ui = { inc: document.getElementById('incubatorList'), rear: document.getElementById('rearingList'), slaugh: document.getElementById('slaughterList'), alerts: document.getElementById('alertsContainer'), dSelect: document.getElementById('dBatch'), eSelect: document.getElementById('eBatch'), rSelect: document.getElementById('reportBatchSelect') };
+            ui.inc.innerHTML = ''; ui.rear.innerHTML = ''; ui.slaugh.innerHTML = ''; ui.alerts.innerHTML = ''; 
+            ui.dSelect.innerHTML = ''; ui.eSelect.innerHTML = '<option value="general">مصروف عام</option>'; ui.rSelect.innerHTML = '<option value="">-- اختر الدفعة للتقرير --</option>';
+            
+            let stats = { eggs: 0, chicks: 0 }; const now = new Date();
+
+            Object.keys(allBatches).forEach(id => {
+                const b = allBatches[id];
+                ui.rSelect.innerHTML += `<option value="${id}">${b.name}</option>`;
+                if(b.status !== 'completed') ui.eSelect.innerHTML += `<option value="${id}">${b.name}</option>`;
+
+                // Dates display string
+                const datesHtml = `<div class="dates-row">
+                    <span>📅 بيض: ${b.insertDate}</span>
+                    <span>🥚 مفقس: ${b.hatcherDate||'-'}</span>
+                    <span>🐣 فقس: ${b.hatchDate||'-'}</span>
+                    <span>🐥 تربية: ${b.rearDate||'-'}</span>
+                </div>`;
+
+                // Actions Html
+                const actionsHtml = `<div class="batch-actions">
+                    <button onclick="deleteBatch('${id}')" title="حذف الدفعة">🗑️</button>
+                </div>`;
+
+                if (b.status === 'incubator' || b.status === 'hatcher') {
+                    stats.eggs += b.initialEggs;
+                    const daysIn = Math.floor((now - new Date(b.insertDate)) / 86400000);
+                    let badge = '', actionBtn = '';
+                    
+                    if(b.status === 'incubator') {
+                        badge = `<span class="badge" style="background:var(--info);">حضانة (يوم ${daysIn})</span>`;
+                        if(daysIn >= 15) { actionBtn = `<button class="btn btn-info" onclick="updateStage('${id}','hatcher')">نقل للمفقس</button>`; ui.alerts.innerHTML += `<div>⚠️ الدفعة <b>${b.name}</b> جاهزة للمفقس.</div>`; }
+                    } else {
+                        badge = `<span class="badge" style="background:var(--purple);">مفقس (يوم ${daysIn})</span>`;
+                        if(daysIn >= 18) { actionBtn = `<button class="btn btn-primary" onclick="promptHatch('${id}')">إتمام الفقس</button>`; ui.alerts.innerHTML += `<div>🐣 الدفعة <b>${b.name}</b> موعد فقسها اليوم!</div>`; }
+                    }
+
+                    ui.inc.innerHTML += `<div class="batch-card stage-${b.status}">
+                        <div style="display:flex; justify-content:space-between; align-items:center;"><strong>${b.name}</strong> ${badge}</div>
+                        ${datesHtml}
+                        <div style="margin-top:10px; font-weight:bold;">البيض: ${b.initialEggs}</div>
+                        ${actionBtn} ${actionsHtml}
+                    </div>`;
+                }
+                else if (b.status === 'rearing') {
+                    const alive = b.hatchedChicks - (b.totalDead||0); stats.chicks += alive;
+                    const age = Math.floor((now - new Date(b.rearDate || b.hatchDate)) / 86400000);
+                    ui.dSelect.innerHTML += `<option value="${id}">${b.name} (عمر ${age} يوم)</option>`;
+                    if(age >= 35) ui.alerts.innerHTML += `<div>⏳ الدفعة <b>${b.name}</b> بلغت ${age} يوم (جاهزة للذبح).</div>`;
+
+                    ui.rear.innerHTML += `<div class="batch-card stage-rearing">
+                        <div style="display:flex; justify-content:space-between;"><strong>${b.name}</strong> <span class="badge" style="background:var(--warning);color:#000;">عمر ${age} يوم</span></div>
+                        ${datesHtml}
+                        <div class="grid-2" style="margin-top:10px; background:var(--bg); padding:10px; border-radius:8px; text-align:center;">
+                            <div>متبقي: <b>${alive}</b></div>
+                            <div>علف: <b>${b.totalFeed||0} ك</b></div>
+                        </div>
+                        <button class="btn btn-danger" onclick="updateStage('${id}','slaughter')">نقل لغرفة الذبح</button>
+                        ${actionsHtml}
+                    </div>`;
+                }
+                else if (b.status === 'slaughter') {
+                    ui.slaugh.innerHTML += `<div class="batch-card stage-slaughter">
+                        <div style="display:flex; justify-content:space-between;"><strong>${b.name}</strong> <span class="badge" style="background:var(--danger);">قيد الذبح</span></div>
+                        <button class="btn btn-success" onclick="promptClassify('${id}')">تصنيف وترحيل للفريزر</button>
+                        ${actionsHtml}
+                    </div>`;
+                }
+            });
+            if(ui.alerts.innerHTML === '') ui.alerts.innerHTML = '<div class="text-success" style="font-weight:bold;">✅ لا يوجد تنبيهات.</div>';
+            document.getElementById('dashEggs').innerText = stats.eggs; document.getElementById('dashChicks').innerText = stats.chicks;
+        }
+
+        // Freezer & Ledger Renderers...
+        onValue(ref(db, "inventory/freezer"), (snapshot) => {
+            const data = snapshot.exists() ? snapshot.val() : {};
+            let total = 0; Object.values(data).forEach(v => total+=v);
+            document.getElementById('dashFreezer').innerText = total;
+        });
+
+        onValue(ref(db, "ledger"), (snapshot) => {
+            allTransactions = snapshot.exists() ? snapshot.val() : {};
+            let tIn = 0, tOut = 0, html = '';
+            Object.keys(allTransactions).sort((a,b)=>allTransactions[b].timestamp-allTransactions[a].timestamp).forEach(id => {
+                const t = allTransactions[id];
+                if(t.type === 'in') tIn += t.amount; else tOut += t.amount;
+                html += `<div class="transaction-item">
+                    <div><b>${t.desc}</b><br><span style="font-size:12px;color:#777;">${t.date}</span></div>
+                    <div style="font-weight:900; color:${t.type==='in'?'var(--success)':'var(--danger)'}" dir="ltr">${t.type==='in'?'+':'-'} ${t.amount}</div>
+                </div>`;
+            });
+            document.getElementById('totalRev').innerText = tIn; document.getElementById('totalExp').innerText = tOut;
+            document.getElementById('netProfit').innerText = (tIn - tOut) + " ج.م"; document.getElementById('dashSales').innerText = tIn;
+            document.getElementById('ledgerList').innerHTML = html || '<div style="text-align:center;padding:20px;">لا يوجد سجلات</div>';
+            if(document.getElementById('reportBatchSelect').value) window.generateBatchReport();
+        });
+
+        // ================= Batch Result Report (Modification 9 & 13) =================
         window.generateBatchReport = () => {
             const id = document.getElementById('reportBatchSelect').value;
             const container = document.getElementById('batchReportContainer');
-            
             if(!id) { container.style.display = 'none'; return; }
             
             const b = allBatches[id];
-            let batchCost = 0;
+            let batchCost = 0; let salesFromBatch = 0; // (Optional: track exact sales if linked to batch, but usually cost is the main thing)
             
             Object.values(allTransactions).forEach(t => {
                 if(t.batchId === id && t.type === 'out') batchCost += t.amount;
             });
 
-            // If batch is completed, calculate cost per pair
-            let costPerPairHtml = '';
-            if(b.status === 'completed' && b.slaughterYield > 0) {
-                const cpp = (batchCost / b.slaughterYield).toFixed(2);
-                costPerPairHtml = `<div style="margin-top:10px; padding:10px; background:var(--card-bg); border-radius:8px; text-align:center; color:var(--primary); font-weight:bold;">تكلفة الجوز الواحد: ${cpp} ج.م</div>`;
-            }
+            // Calculate runtime values
+            const hatched = b.hatchedChicks || 0;
+            const dead = b.totalDead || 0;
+            const alive = hatched - dead;
+            let outputHtml = '';
+            
+            if(b.status === 'completed' && b.classifyData) {
+                const yieldTotal = b.slaughterYield || 0;
+                let potentialRevenue = 0;
+                Object.keys(b.classifyData).forEach(g => {
+                    if(b.classifyData[g] > 0) {
+                        potentialRevenue += (b.classifyData[g] * (globalSettings[g]||0));
+                        outputHtml += `<span class="badge" style="background:var(--primary); margin:2px;">${gradeNames[g]}: ${b.classifyData[g]}</span>`;
+                    }
+                });
+                
+                const costPerPair = yieldTotal > 0 ? (batchCost / yieldTotal).toFixed(2) : 0;
+                const netProfit = potentialRevenue - batchCost;
 
-            container.innerHTML = `
-                <div style="font-size:14px; line-height:1.8;">
-                    <strong>الدفعة:</strong> ${b.name} <br>
-                    <strong>الحالة:</strong> ${b.status === 'completed' ? 'مكتملة ومذبوحة' : 'قيد التشغيل'}<br>
-                    <strong>إجمالي العلف المستهلك:</strong> ${b.totalFeed||0} كجم<br>
-                    <strong>إجمالي التكاليف المباشرة المحملة:</strong> <span class="text-danger" style="font-weight:bold;">${batchCost} ج.م</span>
-                    ${costPerPairHtml}
-                </div>
-            `;
+                container.innerHTML = `
+                    <div style="background:var(--bg); padding:15px; border-radius:10px;">
+                        <h4 style="margin-top:0; color:var(--primary);">${b.name} - (مكتملة)</h4>
+                        <div class="grid-2" style="font-size:14px; line-height:1.8;">
+                            <div>🥚 بيض: <b>${b.initialEggs}</b></div>
+                            <div>🐣 فقس: <b class="text-success">${hatched}</b></div>
+                            <div>☠️ نافق: <b class="text-danger">${dead}</b></div>
+                            <div>🌾 علف: <b>${b.totalFeed||0} ك</b></div>
+                            <div>💸 تكلفة: <b class="text-danger">${batchCost} ج</b></div>
+                            <div>💰 قيمة إنتاج: <b class="text-success">${potentialRevenue} ج</b></div>
+                        </div>
+                        <div style="margin-top:15px;"><b>مخرجات الدفعة:</b><br>${outputHtml}</div>
+                        <hr style="border:1px solid #ddd; margin:15px 0;">
+                        <div class="grid-2">
+                            <div style="background:var(--card-bg); padding:10px; border-radius:8px; text-align:center;">
+                                <div style="font-size:12px;">تكلفة الجوز الفعلي</div>
+                                <div style="font-size:20px; color:var(--danger); font-weight:bold;">${costPerPair} ج</div>
+                            </div>
+                            <div style="background:var(--card-bg); padding:10px; border-radius:8px; text-align:center;">
+                                <div style="font-size:12px;">الربح المتوقع من الدفعة</div>
+                                <div style="font-size:20px; color:var(--success); font-weight:bold;">${netProfit} ج</div>
+                            </div>
+                        </div>
+                    </div>`;
+            } else {
+                container.innerHTML = `
+                    <div style="background:var(--bg); padding:15px; border-radius:10px; font-size:14px; line-height:1.8;">
+                        <h4 style="margin-top:0; color:var(--primary);">${b.name} - (قيد التشغيل)</h4>
+                        <div>🥚 بيض أولي: <b>${b.initialEggs}</b></div>
+                        <div>🐣 فقس (إن وُجد): <b>${hatched}</b></div>
+                        <div>☠️ نافق حتى الآن: <b>${dead}</b> (متبقي: ${alive})</div>
+                        <div>🌾 علف مستهلك: <b>${b.totalFeed||0} كجم</b></div>
+                        <div>💸 تكاليف محملة حتى اللحظة: <b class="text-danger">${batchCost} ج.م</b></div>
+                    </div>`;
+            }
             container.style.display = 'block';
         };
-
     </script>
 </body>
 </html>
